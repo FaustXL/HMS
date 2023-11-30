@@ -24,7 +24,7 @@
             :class="{ active: isCollapse }"
             @click="toggleSwitch"
           >
-            <i><font-awesome-icon :icon="['fas', 'expand']" spin /></i>
+            <i><font-awesome-icon :icon="['fas', 'expand']"/></i>
           </div>
 
           <!-- 1.用户中心入口 -->
