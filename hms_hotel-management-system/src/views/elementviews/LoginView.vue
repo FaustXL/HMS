@@ -8,7 +8,7 @@
           <img src="@/imgs/logo_low.png" width="20%">
           <h2>登录</h2>
           <div style="position: relative;">
-            <input v-model="accountForm.account" placeholder="" class="account">
+            <input v-model="accountForm.username" placeholder="" class="account">
             <label class="accountLabel">请输入账号</label>
           </div>
           <div style="position: relative;">
@@ -16,7 +16,7 @@
             <label class="accountLabel">请输入密码</label>
           </div>
           <el-button type="text" style="height: 40px;width: 100px;position: absolute;left: 50px;bottom: 50px;" @click="enrollShow(1)">新增管理员？点击注册</el-button>
-          <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="openMes">下一步</el-button>
+          <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="Login()">下一步</el-button>
         </div>
       </div>
 
@@ -26,19 +26,19 @@
           <img src="@/imgs/logo_low.png" width="20%">
           <h2>注册</h2>
           <div style="position: relative;">
-            <input v-model="accountForm.account" placeholder="" class="account">
+            <input v-model="registerForm.username" placeholder="" class="account">
             <label class="accountLabel">请输入账号</label>
           </div>
           <div style="position: relative;">
-            <input v-model="accountForm.password" placeholder="" class="account" type="password">
+            <input v-model="registerForm.password" placeholder="" class="account" type="password">
             <label class="accountLabel">请输入密码</label>
           </div>
           <div style="position: relative;">
-            <input v-model="accountForm.repassword" placeholder="" class="account" type="password">
+            <input v-model="registerForm.repassword" placeholder="" class="account" type="password">
             <label class="accountLabel">请再次输入密码</label>
           </div>
           <el-button type="text" style="height: 40px;width: 100px;position: absolute;left: 50px;bottom: 50px;" @click="enrollShow(0)">已有账号？点击登录</el-button>
-          <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="openMes">下一步</el-button>
+          <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="register()">下一步</el-button>
         </div>
       </div>
 
@@ -47,21 +47,25 @@
 </template>
 
 <script>
+import request from "@/utils/request.js";
 export default {
   data() {
     return {
       accountForm:[
         {
-          account: '',
+          username: '',
           password: '',
-          repassword: '',
         }
       ],
+      registerForm:{
+        username: '',
+        password: '',
+        repassword: '',
+      },
       maxbox: 'maxbox',
       enrollShowBackground:'background: #fff;',
       loginBox: 'opacity: 1;z-index: 1;height: 450px;',
       enrollBox: 'opacity: 0;position: absolute;z-index: 0;height: 450px;',
-      //maxboxbule: 'top:-100%;left: -100%;width: 0;height: 0vh;',
     }
   },methods: {
     enrollShow(index){
@@ -69,18 +73,21 @@ export default {
         this.enrollShowBackground = 'background: #3688db;';
         this.loginBox = 'opacity: 0;position: absolute;z-index: 0;height: 500px;';
         this.enrollBox = 'opacity: 1;z-index: 1;height: 500px;';
-        this.accountForm.account = '';
-        this.accountForm.password = '';
-        this.accountForm.repassword = '';
-        /* this.maxboxbule = 'top:0;left: 0;width: 100vw;height: 100vh;'; */
+        this.accountForm=
+        {
+          username: '',
+          password: '',
+        };
+        this.registerForm=
+        {
+          username: '',
+          password: '',
+          repassword: ''
+        };
       }else{
         this.enrollShowBackground = 'background: #fff;';
         this.loginBox = 'opacity: 1;z-index: 1;height: 450px;';
         this.enrollBox = 'opacity: 0;position: absolute;z-index: 0;height: 450px;';
-        this.accountForm.account = '';
-        this.accountForm.password = '';
-        this.accountForm.repassword = '';
-        /* this.maxboxbule = 'top:-100%;left: -100%;width: 0;height: 0vh;'; */
       }
     },
     openMes(message) {
@@ -89,6 +96,39 @@ export default {
         title: '提示',
         message: h('i', { style: 'color: teal'}, message)
       });
+    },
+    Login(){
+      /* 登录 */
+      request({
+        url:'/users',
+        method:"post",
+        data:this.accountForm
+      }).then( res =>{
+        if(res.code == 20011){
+          this.openMes(res.message);
+          this.$router.push({name:'room'})
+        }else{
+          this.openMes(res.message);
+        }
+      })
+    },
+    register(){
+      /* 注册 */
+      request({
+        url:'/users/register',
+        method:"post",
+        data:this.registerForm
+      }).then(res =>{
+        if(res.code == 20021){
+          this.openMes(res.message);
+          this.accountForm.username = this.registerForm.username;
+          this.accountForm.password = this.registerForm.password;
+          this.enrollShow(0);
+          this.openMes('注册成功！');
+        }else{
+          this.openMes(res.message);
+        }
+      })
     },
   },
 }
