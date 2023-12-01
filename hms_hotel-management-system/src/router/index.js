@@ -41,7 +41,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/client'
+    redirect: '/dooropen'
   }
 ]
 

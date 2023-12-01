@@ -14,8 +14,6 @@
         <el-menu
           default-active="1-4-1"
           class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
           :collapse="isCollapse"
         >
         <!-- 顶端按钮，用于展开或收缩导航 -->
@@ -91,8 +89,6 @@
         <el-menu
           default-active="1-4-1"
           class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
           :collapse="isCollapse2"
         >
           <!-- 系统的首页 -->
@@ -144,7 +140,28 @@
       </el-aside>
 
       <el-main>
-        
+        <el-card class="box-card">
+          <el-tabs v-model="activeName" @tab-click="TabClick">
+          <el-tab-pane label="房间管控" name="RoomControl">房间管控</el-tab-pane>
+          <el-tab-pane label="客户入住" name="Stay">
+            <div class="block">
+              <span class="demonstration">带快捷选项</span>
+              <el-date-picker
+                v-model="value2"
+                type="datetimerange"
+                :picker-options="pickerOptions"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :default-time="['12:00:00', '08:00:00']"
+                align="right">
+              </el-date-picker>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="客户退房" name="Check">客户退房</el-tab-pane>
+          <el-tab-pane label="条件查询" name="Inquire">条件查询</el-tab-pane>
+        </el-tabs>
+        </el-card>
       </el-main>
     </el-container>
   </div>
@@ -156,15 +173,28 @@ export default {
     return {
       isCollapse: true,
       isCollapse2: false,
-      
+      activeName: 'RoomControl',
+      /* pickerOptions: {
+          shortcuts: [{
+            text: '一晚',
+            onClick(picker) {
+              const start = new Date();
+              const end = new Date();
+              //const end = new Date(start.getFullYear, start.getMonth, start.getDay, 12, 0);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        }, */
+        value2: '',
     };
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    TabClick(tab, event) {
+      console.log(tab, event);
+      if(this.activeName == 'RoomControl'){
+        /* 点击房间管控的时候提交请求获取数据 */
+        console.log(this.activeName);
+      }
     },
     toggleSwitch() {
       this.isCollapse = !this.isCollapse;
@@ -176,4 +206,12 @@ export default {
 </script>
 
 <style>
+.box-card{
+  width: 98%;
+  min-width: 1000px;
+  min-height: 95vh;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
 </style>
