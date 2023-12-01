@@ -16,4 +16,8 @@ export default{
 </script>
 
 <style>
+@import "./views/css/font.css";
+body{
+  font-family: JetBrainsMono-Regular;
+}
 </style>
