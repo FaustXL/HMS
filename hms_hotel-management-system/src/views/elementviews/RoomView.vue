@@ -83,7 +83,7 @@
             3.资源管理页面（酒店洗漱用品等的库存情况）
             4.入退房管理页面（记录客人的入退房信息{入住时间、退房时间、客人信息}）
             5.客户管理页面（客人信息）（需再次验证二级密码）
-         -->
+      -->
       <el-aside width="auto">
         <el-menu
           default-active="1-4-1"
@@ -150,26 +150,7 @@
                 style="width: 100px"
               ></el-input>
             </el-form-item>
-            <!-- <el-form-item label="楼层">
-              <el-select
-                v-model="slelctFrom.floor"
-                placeholder="楼层"
-                style="width: 150px"
-              >
-              <el-option
-                    label="全部"
-                    value="0"
-                    @click="selectAllAction()"
-                  ></el-option>
-              <el-option
-                v-for="item in floors"
-                :key="item"
-                :label="`第 ${item} 层`"
-                :value="item"
-              >
-              </el-option>
-              </el-select>
-            </el-form-item> -->
+            
             <el-form-item label="房间价格">
               <el-input
                 v-model="slelctFrom.price"
