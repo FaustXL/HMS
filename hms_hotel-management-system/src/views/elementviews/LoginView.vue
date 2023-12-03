@@ -8,12 +8,12 @@
           <img src="@/imgs/logo_low.png" width="20%">
           <h2>登录</h2>
           <div style="position: relative;">
-            <input v-model="accountForm.username" placeholder="" class="account">
-            <label class="accountLabel">请输入账号</label>
+            <input ref="userName" v-model="accountForm.username" placeholder="" class="account" maxlength="16">
+            <label ref="userNameLabel" class="accountLabel">请输入账号</label>
           </div>
           <div style="position: relative;">
-            <input v-model="accountForm.password" placeholder="" class="account" type="password">
-            <label class="accountLabel">请输入密码</label>
+            <input ref="password" v-model="accountForm.password" placeholder="" class="account" type="password"  maxlength="16">
+            <label ref="passwordLabel" class="accountLabel">请输入密码</label>
           </div>
           <el-button type="text" style="height: 40px;width: 100px;position: absolute;left: 50px;bottom: 50px;" @click="enrollShow(1)">新增管理员？点击注册</el-button>
           <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="Login()">下一步</el-button>
@@ -26,16 +26,16 @@
           <img src="@/imgs/logo_low.png" width="20%">
           <h2>注册</h2>
           <div style="position: relative;">
-            <input v-model="registerForm.username" placeholder="" class="account">
-            <label class="accountLabel">请输入账号</label>
+            <input ref="registerUserName" v-model="registerForm.username" placeholder="" class="account"  maxlength="16">
+            <label ref="registerUserNameLabel" class="accountLabel">请输入账号</label>
           </div>
           <div style="position: relative;">
-            <input v-model="registerForm.password" placeholder="" class="account" type="password">
-            <label class="accountLabel">请输入密码</label>
+            <input ref="registerPassword" v-model="registerForm.password" placeholder="" class="account" type="password"  maxlength="16">
+            <label ref="registerPasswordLabel" class="accountLabel">请输入密码</label>
           </div>
           <div style="position: relative;">
-            <input v-model="registerForm.repassword" placeholder="" class="account" type="password">
-            <label class="accountLabel">请再次输入密码</label>
+            <input ref="registerRePassword" v-model="registerForm.repassword" placeholder="" class="account" type="password"  maxlength="16">
+            <label ref="registerRePasswordLabel" class="accountLabel">请再次输入密码</label>
           </div>
           <el-button type="text" style="height: 40px;width: 100px;position: absolute;left: 50px;bottom: 50px;" @click="enrollShow(0)">已有账号？点击登录</el-button>
           <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="register()">下一步</el-button>
@@ -51,12 +51,10 @@ import request from "@/utils/request.js";
 export default {
   data() {
     return {
-      accountForm:[
-        {
-          username: '',
-          password: '',
-        }
-      ],
+      accountForm:{
+        username: '',
+        password: '',
+      },
       registerForm:{
         username: '',
         password: '',
@@ -67,8 +65,10 @@ export default {
       loginBox: 'opacity: 1;z-index: 1;height: 450px;',
       enrollBox: 'opacity: 0;position: absolute;z-index: 0;height: 450px;',
     }
-  },methods: {
+  },
+  methods: {
     enrollShow(index){
+      /* 用于表单切换的样式切换以及数据清空 */
       if(index == 1){
         this.enrollShowBackground = 'background: #3688db;';
         this.loginBox = 'opacity: 0;position: absolute;z-index: 0;height: 500px;';
@@ -84,6 +84,11 @@ export default {
           password: '',
           repassword: ''
         };
+        this.$refs.userName.style = this.$refs.userNameLabel.style = 
+        this.$refs.password.style = this.$refs.passwordLabel.style = 
+        this.$refs.registerUserName.style = this.$refs.registerUserNameLabel.style =
+        this.$refs.registerPassword.style = this.$refs.registerPasswordLabel.style = 
+        this.$refs.registerRePassword.style = this.$refs.registerRePasswordLabel.style = ''
       }else{
         this.enrollShowBackground = 'background: #fff;';
         this.loginBox = 'opacity: 1;z-index: 1;height: 450px;';
@@ -97,38 +102,95 @@ export default {
         message: h('i', { style: 'color: teal'}, message)
       });
     },
-    Login(){
+    Login() {
       /* 登录 */
-      request({
-        url:'/users',
-        method:"post",
-        data:this.accountForm
-      }).then( res =>{
-        if(res.code == 20011){
-          this.openMes(res.message);
-          this.$router.push({name:'room'})
+      if(this.accountForm.username == ''||this.accountForm.password == ''){
+        /* 为空，弹出提示框 */
+        this.openMes('不能为空！')
+        if(this.accountForm.username == ''){
+          /* 账号为空，设置动画样式 */
+          this.$refs.userName.style = 
+          'border: 2px solid #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
+          this.$refs.userNameLabel.style = 
+          'color: #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
         }else{
-          this.openMes(res.message);
+          this.$refs.userName.style = this.$refs.userNameLabel.style = ''
         }
-      })
+
+        if(this.accountForm.password == ''){
+          /* 密码为空，设置动画样式 */
+          this.$refs.password.style = 
+          'border: 2px solid #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
+          this.$refs.passwordLabel.style = 
+          'color: #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
+        }else{
+          this.$refs.password.style = this.$refs.passwordLabel.style = ''
+        }
+      }else{
+        request({
+          url:'/users',
+          method:"post",
+          data:this.accountForm
+        }).then( res =>{
+          if(res.code == 20011){
+            this.$router.push({name:'room'})
+          }else{
+            this.openMes(res.message);
+          }
+        })
+      }
+      
     },
-    register(){
+    register() {
       /* 注册 */
-      request({
-        url:'/users/register',
-        method:"post",
-        data:this.registerForm
-      }).then(res =>{
-        if(res.code == 20021){
-          this.openMes(res.message);
-          this.accountForm.username = this.registerForm.username;
-          this.accountForm.password = this.registerForm.password;
-          this.enrollShow(0);
-          this.openMes('注册成功！');
+      if(this.registerForm.username == ''||this.registerForm.password == ''||this.registerForm.repassword == ''){
+        /* 为空，弹出提示框 */
+        this.openMes('不能为空！')
+        if(this.registerForm.username == ''){
+          /* 账号为空，设置动画样式 */
+          this.$refs.registerUserName.style = 
+          'border: 2px solid #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
+          this.$refs.registerUserNameLabel.style = 
+          'color: #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
         }else{
-          this.openMes(res.message);
+          this.$refs.registerUserName.style = this.$refs.registerUserNameLabel.style = ''
         }
-      })
+
+        if(this.registerForm.password == ''){
+          /* 密码为空，设置动画样式 */
+          this.$refs.registerPassword.style = 
+          'border: 2px solid #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
+          this.$refs.registerPasswordLabel.style = 
+          'color: #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
+        }else{
+          this.$refs.registerPassword.style = this.$refs.registerPasswordLabel.style = ''
+        }
+
+        if(this.registerForm.repassword == ''){
+          /* 二次密码为空，设置动画样式 */
+          this.$refs.registerRePassword.style = 
+          'border: 2px solid #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
+          this.$refs.registerRePasswordLabel.style = 
+          'color: #F56C6C;animation-name: isNull; animation-duration: 0.3s;'
+        }else{
+          this.$refs.registerRePassword.style = this.$refs.registerRePasswordLabel.style = ''
+        }
+      }else{
+        request({
+          url:'/users/register',
+          method:"post",
+          data:this.registerForm
+        }).then(res =>{
+          if(res.code == 20031){
+            this.accountForm.username = this.registerForm.username;
+            this.accountForm.password = this.registerForm.password;
+            this.enrollShow(0);
+            this.openMes(res.message);
+          }else{
+            this.openMes(res.message);
+          }
+        })
+      }
     },
   },
 }
@@ -148,13 +210,6 @@ export default {
   transition: all 0.3s ease;
   overflow: hidden;
 }
-/* .maxboxbule{
-  display: block;
-  background-color: #3688db;
-  position: absolute;
-  transition: all 0.3s ease;
-  overflow: hidden;
-} */
 .loginBox{
   display: flex;
   width: 500px;
@@ -212,5 +267,10 @@ export default {
   top: 15px;
   font-size: 15px;
 }
-
+@keyframes isNull{
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(0px); }
+  75% { transform: translateX(3px); }
+  100%{ transform: translateX(0px); }
+}
 </style>
