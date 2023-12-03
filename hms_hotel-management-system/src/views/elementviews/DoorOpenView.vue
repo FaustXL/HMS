@@ -142,18 +142,94 @@
       <el-main>
         <el-card class="box-card">
           <el-tabs v-model="activeName" @tab-click="TabClick">
-          <el-tab-pane label="房间管控" name="RoomControl">房间管控</el-tab-pane>
+            <el-tab-pane label="房间管控" name="RoomControl">
+
+              <el-tabs tab-position="left" v-model="floorName" @tab-click="floorClick" style="margin-left: -20px;">
+                  <el-tab-pane label="全部房间" name="All">
+                    <el-button
+                    type="text"
+                    v-for="(item, index) in rooms"
+                    :key="index"
+                    @click="openRoomDialog(item.id)"
+                    class="roombutton">
+
+                    <!-- 此为房间按钮内的内容区域，显示了房间号（黑色，加粗）、房间价格、房间类型、房间最大居住人数 -->
+                    <el-card
+                      class="room-card"
+                      shadow="hover"
+                      style="position: relative;background-color: #e9e9eb;"
+                      v-if="item.state == '未入住'"
+                    >
+                      <span>{{ item.roomNumber }}</span><br>
+                      <p style="font-size: 13px;color: #909399;">{{ item.state }}</p>
+                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                      </div>
+                    </el-card>
+
+                    <el-card
+                      class="room-card"
+                      shadow="hover"
+                      style="position: relative;background-color: #e1f3d8;"
+                      v-else
+                    >
+                      <span>{{ item.roomNumber }}</span><br>
+                      <p style="font-size: 13px;color: #67C23A;">{{ item.state }}</p>
+                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                      </div>
+                    </el-card>
+
+                    </el-button>
+                  </el-tab-pane>
+              <el-tab-pane v-for="(floor,index) in floors" :key="index" :label="`第 ${floor} 层`" :name="floor">
+                <el-button
+                    type="text"
+                    v-for="(item, index) in rooms"
+                    :key="index"
+                    @click="openRoomDialog(item.id)"
+                    class="roombutton">
+
+                    <!-- 此为房间按钮内的内容区域，显示了房间号（黑色，加粗）、房间价格、房间类型、房间最大居住人数 -->
+                    <el-card
+                      class="room-card"
+                      shadow="hover"
+                      style="position: relative;background-color: #e9e9eb;"
+                      v-if="item.state == '未入住'"
+                    >
+                      <span>{{ item.roomNumber }}</span><br>
+                      <p style="font-size: 13px;color: #909399;">{{ item.state }}</p>
+                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                      </div>
+                    </el-card>
+
+                    <el-card
+                      class="room-card"
+                      shadow="hover"
+                      style="position: relative;background-color: #e1f3d8;"
+                      v-else
+                    >
+                      <span>{{ item.roomNumber }}</span><br>
+                      <p style="font-size: 13px;color: #67C23A;">{{ item.state }}</p>
+                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                      </div>
+                    </el-card>
+
+                    </el-button>
+              </el-tab-pane>
+            </el-tabs>
+            
+          </el-tab-pane>
+
+
           <el-tab-pane label="客户入住" name="Stay">
             <div class="block">
-              <span class="demonstration">带快捷选项</span>
               <el-date-picker
-                v-model="value2"
+                v-model="TimeDefault"
                 type="datetimerange"
                 :picker-options="pickerOptions"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-                :default-time="['12:00:00', '08:00:00']"
+                :default-time="['14:00:00', '12:00:00']"
                 align="right">
               </el-date-picker>
             </div>
@@ -168,27 +244,27 @@
 </template>
 
 <script>
+import request from "@/utils/request.js";
 export default {
   data() {
     return {
       isCollapse: true,
       isCollapse2: false,
       activeName: 'RoomControl',
-      /* pickerOptions: {
-          shortcuts: [{
-            text: '一晚',
-            onClick(picker) {
-              const start = new Date();
-              const end = new Date();
-              //const end = new Date(start.getFullYear, start.getMonth, start.getDay, 12, 0);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        }, */
-        value2: '',
+      floorName: 'All',
+      TimeDefault: '',
+      rooms: [],
+      floors: [],
     };
   },
   methods: {
+    floorClick() {
+      if(this.floorName == 'All'){
+        this.selectfloorAction(0);
+      }else{
+        this.selectfloorAction(this.floorName);
+      }
+    },
     TabClick(tab, event) {
       console.log(tab, event);
       if(this.activeName == 'RoomControl'){
@@ -200,8 +276,48 @@ export default {
       this.isCollapse = !this.isCollapse;
       this.isCollapse2 = !this.isCollapse2;
     },
-    
+    selectAllAction(){
+      /* 查找出所有的房间 */
+      request.get("/room").then((res) => {
+        this.rooms = res.data;
+      });
+    },
+    selectfloorAction(index){
+      /* 查询所有的楼层号 */
+      /* 0为全部 */
+      if(index == 0){
+        this.selectAllAction();
+      }else{
+        request({
+            url:"/room/"+index,
+            method:"get",
+        }).then((res) => {
+          if(res.code == 20011){
+            this.rooms = res.data;
+          }else{
+            this.openMes(res.message);
+          }
+        });
+      }
+    },
+    openMes(message) {
+      //字体为绿色的提示框
+      //用于成功提示
+      const h = this.$createElement;
+      this.$notify({
+        title: '提示',
+        message: h('i', { style: 'color: teal'}, message),
+        customClass: 'messageZ'
+      });
+    },
   },
+  mounted(){
+    this.selectAllAction();
+    request.get("/room/returnFloor").then((res) => {
+      this.floors = res.data;
+      console.log(this.floors);
+    });
+  }
 };
 </script>
 
@@ -213,5 +329,23 @@ export default {
   margin: 0;
   padding: 0;
   position: relative;
+}
+.room-card {
+  width: 150px;
+  height: 100px;
+  font-weight: bold;
+  font-size: large;
+  text-align: left;
+/*   border: 1px solid #2b2b2b; */
+  margin: 0;
+  position: relative
+}
+.roombutton{
+  margin-right: 20px;
+  margin-left: 20px !important
+}
+.roombutton:hover .room-card {
+  color: #409eff;
+  border: 1px solid #409eff;
 }
 </style>
