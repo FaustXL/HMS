@@ -153,9 +153,10 @@
                     @click="openRoomDialog(item.id)"
                     class="roombutton">
 
+                    <!-- 全部 -->
                     <!-- 此为房间按钮内的内容区域，显示了房间号（黑色，加粗）、房间价格、房间类型、房间最大居住人数 -->
                     <el-card
-                      class="room-card"
+                      class="room-Card"
                       shadow="hover"
                       style="position: relative;background-color: #e9e9eb;"
                       v-if="item.state == '未入住'"
@@ -167,7 +168,19 @@
                     </el-card>
 
                     <el-card
-                      class="room-card"
+                      class="room-Card"
+                      shadow="hover"
+                      style="position: relative;background-color: #c6e2ff;"
+                      v-else-if="item.state == '预定中'"
+                    >
+                      <span>{{ item.roomNumber }}</span><br>
+                      <p style="font-size: 13px;color: #409EFF;">{{ item.state }}</p>
+                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                      </div>
+                    </el-card>
+
+                    <el-card
+                      class="room-Card"
                       shadow="hover"
                       style="position: relative;background-color: #e1f3d8;"
                       v-else
@@ -188,9 +201,10 @@
                     @click="openRoomDialog(item.id)"
                     class="roombutton">
 
+                    <!-- 独立楼层 -->
                     <!-- 此为房间按钮内的内容区域，显示了房间号（黑色，加粗）、房间价格、房间类型、房间最大居住人数 -->
                     <el-card
-                      class="room-card"
+                      class="room-Card"
                       shadow="hover"
                       style="position: relative;background-color: #e9e9eb;"
                       v-if="item.state == '未入住'"
@@ -202,7 +216,19 @@
                     </el-card>
 
                     <el-card
-                      class="room-card"
+                      class="room-Card"
+                      shadow="hover"
+                      style="position: relative;background-color: #c6e2ff;"
+                      v-else-if="item.state == '预定中'"
+                    >
+                      <span>{{ item.roomNumber }}</span><br>
+                      <p style="font-size: 13px;color: #409EFF;">{{ item.state }}</p>
+                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                      </div>
+                    </el-card>
+
+                    <el-card
+                      class="room-Card"
                       shadow="hover"
                       style="position: relative;background-color: #e1f3d8;"
                       v-else
@@ -234,9 +260,52 @@
               </el-date-picker>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="客户退房" name="Check">客户退房</el-tab-pane>
+          <el-tab-pane label="客户退房" name="Check">客户退房AAAAAAAAAAAAAAAAAAAAAAAAAA</el-tab-pane>
           <el-tab-pane label="条件查询" name="Inquire">条件查询</el-tab-pane>
         </el-tabs>
+
+          <el-dialog
+            :title="aaaaaaaaa"
+            :visible.sync="roomdialogFormVisible">
+            <el-descriptions class="margin-top" title="index" :column="3" :size="size" border>
+            <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-user"></i>
+                  用户名
+                </template>
+                kooriookami
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-mobile-phone"></i>
+                  手机号
+                </template>
+                18100000000
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-location-outline"></i>
+                  居住地
+                </template>
+                苏州市
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-tickets"></i>
+                  备注
+                </template>
+                <el-tag size="small">学校</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-office-building"></i>
+                  联系地址
+                </template>
+                江苏省苏州市吴中区吴中大道 1188 号
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-dialog>
+
         </el-card>
       </el-main>
     </el-container>
@@ -255,6 +324,7 @@ export default {
       TimeDefault: '',
       rooms: [],
       floors: [],
+      roomdialogFormVisible: false,
     };
   },
   methods: {
@@ -310,6 +380,11 @@ export default {
         customClass: 'messageZ'
       });
     },
+    openRoomDialog(index) {
+      console.log(index)
+      // 打开对应索引的房间弹窗
+      this.roomdialogFormVisible = true;
+    },
   },
   mounted(){
     this.selectAllAction();
@@ -321,7 +396,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .box-card{
   width: 98%;
   min-width: 1000px;
@@ -330,13 +405,13 @@ export default {
   padding: 0;
   position: relative;
 }
-.room-card {
+.room-Card {
   width: 150px;
   height: 100px;
   font-weight: bold;
   font-size: large;
   text-align: left;
-/*   border: 1px solid #2b2b2b; */
+  border: 1px solid none;
   margin: 0;
   position: relative
 }
@@ -344,7 +419,7 @@ export default {
   margin-right: 20px;
   margin-left: 20px !important
 }
-.roombutton:hover .room-card {
+.roombutton:hover .room-Card {
   color: #409eff;
   border: 1px solid #409eff;
 }

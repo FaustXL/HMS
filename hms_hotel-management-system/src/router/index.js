@@ -7,37 +7,58 @@ const routes = [
   {
     path: '/home',
     name: 'home',
-    component: () => import('../views/elementviews/HomeView.vue')
+    component: () => import('../views/elementviews/HomeView.vue'),
+    meta: {
+      index: 1
+    }
   },
   {
     path: '/room',
     name: 'room',
-    component: () => import('../views/elementviews/RoomView.vue')
+    component: () => import('../views/elementviews/RoomView.vue'),
+    meta: {
+      index: 2
+    }
   },
   {
     path: '/resource',
     name: 'resource',
-    component: () => import('@/views/elementviews/ResourceView.vue')
+    component: () => import('@/views/elementviews/ResourceView.vue'),
+    meta: {
+      index: 3
+    }
   },
   {
     path: '/dooropen',
     name: 'dooroper',
-    component: () => import('@/views/elementviews/DoorOpenView.vue')
+    component: () => import('@/views/elementviews/DoorOpenView.vue'),
+    meta: {
+      index: 4
+    }
   },
   {
     path: '/client',
     name: 'client',
-    component: () => import('@/views/elementviews/ClientView.vue')
+    component: () => import('@/views/elementviews/ClientView.vue'),
+    meta: {
+      index: 5
+    }
   },
   {
     path: '/resource',
     name: 'resource',
-    component: () => import('@/views/elementviews/ResourceView.vue')
+    component: () => import('@/views/elementviews/ResourceView.vue'),
+    meta: {
+      index: 6
+    }
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/elementviews/LoginView.vue')
+    component: () => import('@/views/elementviews/LoginView.vue'),
+    meta: {
+      index: 7
+    }
   },
   {
     path: '/',
@@ -46,7 +67,8 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  mode: 'history',
 })
 
 export default router
