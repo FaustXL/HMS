@@ -26,7 +26,7 @@
           </div>
 
           <!-- 1.用户中心入口 -->
-          <router-link to="/home" class="link">
+          <router-link to="/login" class="link">
             <el-menu-item index="1">
               <i class="icon"><font-awesome-icon :icon="['fas', 'user']" /></i>
               <span slot="title">用户中心</span>

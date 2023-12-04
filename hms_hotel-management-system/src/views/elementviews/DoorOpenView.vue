@@ -119,10 +119,8 @@
 
           <!-- 入退房管理 -->
           <router-link to="/dooropen" class="link">
-            <el-menu-item index="4">
-              <i class="icon"
-                ><font-awesome-icon :icon="['fas', 'door-open']"
-              /></i>
+            <el-menu-item index="4" style="color: #409eff;" >
+              <i class="icon" style="color: #409eff;"><font-awesome-icon :icon="['fas', 'door-open']"/></i>
               <span slot="title">入退房管理</span>
             </el-menu-item>
           </router-link>
