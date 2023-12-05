@@ -263,44 +263,48 @@
         </el-tabs>
 
           <el-dialog
-            :title="aaaaaaaaa"
-            :visible.sync="roomdialogFormVisible">
-            <el-descriptions class="margin-top" title="index" :column="3" :size="size" border>
-            <el-descriptions-item>
+            v-model="tempRoom"
+            :title="tempRoom.roomNumber"
+            :visible.sync="roomdialogFormVisible"
+            width="auto">
+            <el-descriptions :data="customer" class="margin-top" title="index" :column="3" :size="size" border>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-postcard"></i>
+                  身份证号
+                </template>
+                {{ customer.idCard }}
+              </el-descriptions-item>
+              
+              <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-user"></i>
-                  用户名
+                  姓名
                 </template>
-                kooriookami
+                {{ customer.name }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-mobile-phone"></i>
                   手机号
                 </template>
-                18100000000
+                {{ customer.phoneNumber }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
-                  <i class="el-icon-location-outline"></i>
-                  居住地
+                  <i class="el-icon-date"></i>
+                  生日
                 </template>
-                苏州市
+                {{ customer.birthday }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-tickets"></i>
                   备注
                 </template>
-                <el-tag size="small">学校</el-tag>
+                {{ customer.comment }}
               </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-office-building"></i>
-                  联系地址
-                </template>
-                江苏省苏州市吴中区吴中大道 1188 号
-              </el-descriptions-item>
+              
             </el-descriptions>
           </el-dialog>
 
@@ -322,6 +326,15 @@ export default {
       TimeDefault: '',
       rooms: [],
       floors: [],
+      customer: {
+        idCard:'',
+        name:'',
+        sex:'',
+        birthday:'',
+        phoneNumber:'',
+        comment:'',
+      },
+      tempRoom:{},
       roomdialogFormVisible: false,
     };
   },

@@ -62,7 +62,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/dooropen'
+    redirect: '/login'
   }
 ]
 

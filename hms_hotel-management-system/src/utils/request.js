@@ -25,7 +25,9 @@ request.interceptors.request.use(config => {
 request.interceptors.response.use(
     response => {
         let res = response.data;
-
+        if(response.code==401){
+            this.$router.push({name:'login'})
+        }
         // 兼容服务端返回的字符串数据
         if (typeof res === 'string') {
             res = res ? JSON.parse(res) : res

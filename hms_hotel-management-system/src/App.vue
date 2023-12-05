@@ -57,7 +57,7 @@ body{
 .slide-left-enter-active,
 .slide-left-leave-active {
   will-change: transform;
-  transition: all 0.5s;
+  transition: all 0.5s ease;
 }
 .slide-right-enter {
   transform: translateX(-100%);
