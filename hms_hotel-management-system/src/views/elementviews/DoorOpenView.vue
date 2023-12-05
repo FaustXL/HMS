@@ -1,316 +1,268 @@
 <template>
   <div>
-    <el-container style="border: 1px solid #eee; min-height: 100vh">
-      <!-- 第一列导航 -->
-      <!--
-        此导航栏为系统总导航栏，负责用户的账户管理
-        1.用户中心入口
-        2.员工管理入口
-        3.财务管理入口
-        4.报表统计入口
-        5.退出登录
-        -->
-        <el-aside width="auto">
-        <el-menu
-          default-active="1-4-1"
-          class="el-menu-vertical-demo"
-          :collapse="isCollapse"
-        >
-        <!-- 顶端按钮，用于展开或收缩导航 -->
-          <div
-            class="custom-switch"
-            :class="{ active: isCollapse }"
-            @click="toggleSwitch"
-          >
-            <i><font-awesome-icon :icon="['fas', 'expand']"/></i>
-          </div>
+    <el-card class="box-card">
+     <el-tabs v-model="activeName" @tab-click="TabClick">
+       <el-tab-pane label="房间管控" name="RoomControl">
 
-          <!-- 1.用户中心入口 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="1">
-              <i class="icon"><font-awesome-icon :icon="['fas', 'user']" /></i>
-              <span slot="title">用户中心</span>
-            </el-menu-item>
-          </router-link>
+         <el-tabs tab-position="left" v-model="floorName" @tab-click="floorClick" style="margin-left: -20px;">
+             <el-tab-pane label="全部房间" name="All">
+               <el-button
+               type="text"
+               v-for="(item, index) in rooms"
+               :key="index"
+               @click="openRoomDialog(item.id)"
+               class="roombutton">
 
-          <!-- 2.员工管理入口 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="2">
-              <i class="icon"
-                ><font-awesome-icon :icon="['fas', 'people-group']"
-              /></i>
-              <span slot="title">员工管理</span>
-            </el-menu-item>
-          </router-link>
+               <!-- 全部 -->
+               <!-- 此为房间按钮内的内容区域，显示了房间号（黑色，加粗）、房间价格、房间类型、房间最大居住人数 -->
+               <el-card
+                 class="room-Card"
+                 shadow="hover"
+                 style="position: relative;background-color: #e9e9eb;"
+                 v-if="item.state == '未入住'"
+               >
+                 <span>{{ item.roomNumber }}</span><br>
+                 <p style="font-size: 13px;color: #909399;">{{ item.state }}</p>
+                 <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                 </div>
+               </el-card>
 
-          <!-- 3.财务管理入口 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="3">
-              <i class="icon"><font-awesome-icon :icon="['fas', 'coins']" /></i>
-              <span slot="title">财务管理</span>
-            </el-menu-item>
-          </router-link>
+               <el-card
+                 class="room-Card"
+                 shadow="hover"
+                 style="position: relative;background-color: #c6e2ff;"
+                 v-else-if="item.state == '预定中'"
+               >
+                 <span>{{ item.roomNumber }}</span><br>
+                 <p style="font-size: 13px;color: #409EFF;">{{ item.state }}</p>
+                 <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                 </div>
+               </el-card>
 
-          <!-- 4.报表统计入口 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="4">
-              <i class="icon"
-                ><font-awesome-icon :icon="['fas', 'arrow-trend-up']"
-              /></i>
-              <span slot="title">报表统计</span>
-            </el-menu-item>
-          </router-link>
+               <el-card
+                 class="room-Card"
+                 shadow="hover"
+                 style="position: relative;background-color: #e1f3d8;"
+                 v-else
+               >
+                 <span>{{ item.roomNumber }}</span><br>
+                 <p style="font-size: 13px;color: #67C23A;">{{ item.state }}</p>
+                 <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                 </div>
+               </el-card>
 
-          <!-- 5.退出登录 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="5">
-              <i class="icon"
-                ><font-awesome-icon
-                  :icon="['fass', 'arrow-right-from-bracket']"
-              /></i>
-              <span slot="title">退出登录</span>
-            </el-menu-item>
-          </router-link>
-
-        </el-menu>
-      </el-aside>
-
-      <!-- 第二列导航 -->
-      <!--
-            此导航栏负责网页的功能入口
-            主要是脱离了管理员本身账号的功能的功能
-            1.该系统的首页（功能的统合页面，存放各个功能的卡片，卡片内容为功能介绍）
-            2.房间管理页面（房间状态的总存放页，配备条件查询功能，分页功能，在此页面点击房间卡片，即会弹出此房间的管理表单）
-            3.资源管理页面（酒店洗漱用品等的库存情况）
-            4.入退房管理页面（记录客人的入退房信息{入住时间、退房时间、客人信息}）
-            5.客户管理页面（客人信息）（需再次验证二级密码）
-         -->
-      <el-aside width="auto">
-        <el-menu
-          default-active="1-4-1"
-          class="el-menu-vertical-demo"
-          :collapse="isCollapse2"
-        >
-          <!-- 系统的首页 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="1">
-              <i class="icon"><font-awesome-icon :icon="['fas', 'house']" /></i>
-              <span slot="title">首页</span>
-            </el-menu-item>
-          </router-link>
-
-          <!-- 房间管理页面 -->
-          <router-link to="/room" class="link">
-            <el-menu-item index="2">
-              <i class="icon"><font-awesome-icon :icon="['fas', 'hotel']" /></i>
-              <span slot="title">房间管理</span>
-            </el-menu-item>
-          </router-link>
-
-          <!-- 资源管理页面 -->
-          <router-link to="/resource" class="link">
-            <el-menu-item index="3">
-              <i class="icon"
-                ><font-awesome-icon :icon="['fas', 'database']"
-              /></i>
-              <span slot="title">资源管理</span>
-            </el-menu-item>
-          </router-link>
-
-          <!-- 入退房管理 -->
-          <router-link to="/dooropen" class="link">
-            <el-menu-item index="4" style="color: #409eff;" >
-              <i class="icon" style="color: #409eff;"><font-awesome-icon :icon="['fas', 'door-open']"/></i>
-              <span slot="title">入退房管理</span>
-            </el-menu-item>
-          </router-link>
-
-          <!-- 客户管理 -->
-          <router-link to="/client" class="link">
-            <el-menu-item index="5">
-              <i class="icon"
-                ><font-awesome-icon :icon="['fas', 'users-viewfinder']"
-              /></i>
-              <span slot="title">客户管理</span>
-            </el-menu-item>
-          </router-link>
-        </el-menu>
-      </el-aside>
-
-      <el-main>
-        <el-card class="box-card">
-          <el-tabs v-model="activeName" @tab-click="TabClick">
-            <el-tab-pane label="房间管控" name="RoomControl">
-
-              <el-tabs tab-position="left" v-model="floorName" @tab-click="floorClick" style="margin-left: -20px;">
-                  <el-tab-pane label="全部房间" name="All">
-                    <el-button
-                    type="text"
-                    v-for="(item, index) in rooms"
-                    :key="index"
-                    @click="openRoomDialog(item.id)"
-                    class="roombutton">
-
-                    <!-- 全部 -->
-                    <!-- 此为房间按钮内的内容区域，显示了房间号（黑色，加粗）、房间价格、房间类型、房间最大居住人数 -->
-                    <el-card
-                      class="room-Card"
-                      shadow="hover"
-                      style="position: relative;background-color: #e9e9eb;"
-                      v-if="item.state == '未入住'"
-                    >
-                      <span>{{ item.roomNumber }}</span><br>
-                      <p style="font-size: 13px;color: #909399;">{{ item.state }}</p>
-                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
-                      </div>
-                    </el-card>
-
-                    <el-card
-                      class="room-Card"
-                      shadow="hover"
-                      style="position: relative;background-color: #c6e2ff;"
-                      v-else-if="item.state == '预定中'"
-                    >
-                      <span>{{ item.roomNumber }}</span><br>
-                      <p style="font-size: 13px;color: #409EFF;">{{ item.state }}</p>
-                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
-                      </div>
-                    </el-card>
-
-                    <el-card
-                      class="room-Card"
-                      shadow="hover"
-                      style="position: relative;background-color: #e1f3d8;"
-                      v-else
-                    >
-                      <span>{{ item.roomNumber }}</span><br>
-                      <p style="font-size: 13px;color: #67C23A;">{{ item.state }}</p>
-                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
-                      </div>
-                    </el-card>
-
-                    </el-button>
-                  </el-tab-pane>
+               </el-button>
+             </el-tab-pane>
               <el-tab-pane v-for="(floor,index) in floors" :key="index" :label="`第 ${floor} 层`" :name="floor">
                 <el-button
                     type="text"
                     v-for="(item, index) in rooms"
                     :key="index"
                     @click="openRoomDialog(item.id)"
-                    class="roombutton">
+               class="roombutton">
 
-                    <!-- 独立楼层 -->
-                    <!-- 此为房间按钮内的内容区域，显示了房间号（黑色，加粗）、房间价格、房间类型、房间最大居住人数 -->
-                    <el-card
-                      class="room-Card"
-                      shadow="hover"
-                      style="position: relative;background-color: #e9e9eb;"
-                      v-if="item.state == '未入住'"
-                    >
-                      <span>{{ item.roomNumber }}</span><br>
-                      <p style="font-size: 13px;color: #909399;">{{ item.state }}</p>
-                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
-                      </div>
-                    </el-card>
+               <!-- 独立楼层 -->
+               <!-- 此为房间按钮内的内容区域，显示了房间号（黑色，加粗）、房间价格、房间类型、房间最大居住人数 -->
+               <el-card
+                 class="room-Card"
+                 shadow="hover"
+                 style="position: relative;background-color: #e9e9eb;"
+                 v-if="item.state == '未入住'"
+               >
+                 <span>{{ item.roomNumber }}</span><br>
+                 <p style="font-size: 13px;color: #909399;">{{ item.state }}</p>
+                 <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                 </div>
+               </el-card>
 
-                    <el-card
-                      class="room-Card"
-                      shadow="hover"
-                      style="position: relative;background-color: #c6e2ff;"
-                      v-else-if="item.state == '预定中'"
-                    >
-                      <span>{{ item.roomNumber }}</span><br>
-                      <p style="font-size: 13px;color: #409EFF;">{{ item.state }}</p>
-                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
-                      </div>
-                    </el-card>
+               <el-card
+                 class="room-Card"
+                 shadow="hover"
+                 style="position: relative;background-color: #c6e2ff;"
+                 v-else-if="item.state == '预定中'"
+               >
+                 <span>{{ item.roomNumber }}</span><br>
+                 <p style="font-size: 13px;color: #409EFF;">{{ item.state }}</p>
+                 <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                 </div>
+               </el-card>
 
-                    <el-card
-                      class="room-Card"
-                      shadow="hover"
-                      style="position: relative;background-color: #e1f3d8;"
-                      v-else
-                    >
-                      <span>{{ item.roomNumber }}</span><br>
-                      <p style="font-size: 13px;color: #67C23A;">{{ item.state }}</p>
-                      <div style="font-weight: lighter;font-size: 12px;color: #555;">
-                      </div>
-                    </el-card>
+               <el-card
+                 class="room-Card"
+                 shadow="hover"
+                 style="position: relative;background-color: #e1f3d8;"
+                 v-else
+               >
+                 <span>{{ item.roomNumber }}</span><br>
+                 <p style="font-size: 13px;color: #67C23A;">{{ item.state }}</p>
+                 <div style="font-weight: lighter;font-size: 12px;color: #555;">
+                 </div>
+               </el-card>
 
-                    </el-button>
-              </el-tab-pane>
-            </el-tabs>
-            
-          </el-tab-pane>
+               </el-button>
+         </el-tab-pane>
+       </el-tabs>
+       
+     </el-tab-pane>
 
 
-          <el-tab-pane label="客户入住" name="Stay">
-            <div class="block">
-              <el-date-picker
-                v-model="TimeDefault"
-                type="datetimerange"
-                :picker-options="pickerOptions"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :default-time="['14:00:00', '12:00:00']"
-                align="right">
-              </el-date-picker>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="客户退房" name="Check">客户退房AAAAAAAAAAAAAAAAAAAAAAAAAA</el-tab-pane>
-          <el-tab-pane label="条件查询" name="Inquire">条件查询</el-tab-pane>
-        </el-tabs>
+     <el-tab-pane label="客户入住" name="Stay">
+       <!-- <div class="block">
+         <el-date-picker
+           v-model="TimeDefault"
+           type="datetimerange"
+           :picker-options="pickerOptions"
+           range-separator="至"
+           start-placeholder="开始日期"
+           end-placeholder="结束日期"
+           :default-time="['14:00:00', '12:00:00']"
+           align="right">
+         </el-date-picker>
+       </div> -->
+       <el-steps :active="active" finish-status="success" style="margin: 20px 50px 20px 50px;">
+         <el-step title="步骤 1"></el-step>
+         <el-step title="步骤 2"></el-step>
+         <el-step title="步骤 3"></el-step>
+       </el-steps>
 
-          <el-dialog
-            v-model="tempRoom"
-            :title="tempRoom.roomNumber"
-            :visible.sync="roomdialogFormVisible"
-            width="auto">
-            <el-descriptions :data="customer" class="margin-top" title="index" :column="3" :size="size" border>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-postcard"></i>
-                  身份证号
-                </template>
-                {{ customer.idCard }}
-              </el-descriptions-item>
-              
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-user"></i>
-                  姓名
-                </template>
-                {{ customer.name }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-mobile-phone"></i>
-                  手机号
-                </template>
-                {{ customer.phoneNumber }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-date"></i>
-                  生日
-                </template>
-                {{ customer.birthday }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-tickets"></i>
-                  备注
-                </template>
-                {{ customer.comment }}
-              </el-descriptions-item>
-              
-            </el-descriptions>
-          </el-dialog>
+       <el-form ref="form" :model="form" label-width="80px">
+         <!-- <el-form-item label="活动名称">
+           <el-input v-model="form.name"></el-input>
+         </el-form-item> -->
 
-        </el-card>
-      </el-main>
-    </el-container>
+         <el-form-item label="房间号">
+           <el-select v-model="value" filterable placeholder="请选择">
+             <el-option
+               v-for="item in rooms"
+               :key="item.roomNumber"
+               :label="item.roomNumber"
+               :value="item.roomNumber">
+             </el-option>
+           </el-select>
+         </el-form-item>
+
+         <!-- <el-form-item label="活动区域">
+           <el-select v-model="form.region" placeholder="请选择活动区域">
+             <el-option label="区域一" value="shanghai"></el-option>
+             <el-option label="区域二" value="beijing"></el-option>
+           </el-select>
+         </el-form-item>
+
+         <el-form-item label="活动时间">
+           <el-col :span="11">
+             <div class="block">
+               <el-date-picker
+                 v-model="TimeDefault"
+                 type="datetimerange"
+                 :picker-options="pickerOptions"
+                 range-separator="至"
+                 start-placeholder="开始日期"
+                 end-placeholder="结束日期"
+                 :default-time="['14:00:00', '12:00:00']"
+                 align="right">
+               </el-date-picker>
+             </div>
+           </el-col>
+         </el-form-item>
+         
+         <el-form-item label="订单类型">
+           <el-radio-group v-model="form.resource">
+             <el-radio label="入住"></el-radio>
+             <el-radio label="预订"></el-radio>
+           </el-radio-group>
+         </el-form-item>
+         <el-form-item label="备注">
+           <el-input type="textarea" v-model="form.desc"></el-input>
+         </el-form-item> -->
+
+         <el-form-item>
+           <el-button type="primary" @click="onSubmit">立即创建</el-button>
+           <el-button>取消</el-button>
+         </el-form-item>
+       </el-form>
+
+     </el-tab-pane>
+     <el-tab-pane label="客户退房" name="Check">客户退房AAAAAAAAAAAAAAAAAAAAAAAAAA</el-tab-pane>
+     <el-tab-pane label="条件查询" name="Inquire">条件查询</el-tab-pane>
+   </el-tabs>
+
+     <!-- 房间信息窗口 -->
+     <el-dialog
+       v-model="tempRoom"
+       :title="tempRoom.roomNumber"
+       :visible.sync="roomdialogFormVisible">
+       <el-descriptions :data="tempRoom" class="margin-top" title="房间信息" :column="3" :size="size" border>
+         <!-- <el-descriptions-item>
+           <template slot="label">
+             <i class="el-icon-postcard"></i>
+             身份证号
+           </template>
+           {{ customer.idCard }}
+         </el-descriptions-item>
+         
+         <el-descriptions-item>
+           <template slot="label">
+             <i class="el-icon-user"></i>
+             姓名
+           </template>
+           {{ customer.name }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template slot="label">
+             <i class="el-icon-mobile-phone"></i>
+             手机号
+           </template>
+           {{ customer.phoneNumber }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template slot="label">
+             <i class="el-icon-date"></i>
+             生日
+           </template>
+           {{ customer.birthday }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template slot="label">
+             <i class="el-icon-tickets"></i>
+             备注
+           </template>
+           {{ customer.comment }}
+         </el-descriptions-item> -->
+         <el-descriptions-item>
+           <template slot="label">
+             房间号
+           </template>
+           {{ tempRoom.roomNumber }}
+         </el-descriptions-item>
+         
+         <el-descriptions-item>
+           <template slot="label">
+             价格
+           </template>
+           {{ tempRoom.price }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template slot="label">
+             楼层
+           </template>
+           {{ tempRoom.floor }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template slot="label">
+             最大可入住人数
+           </template>
+           {{ tempRoom.maxNumber }}
+         </el-descriptions-item>
+         <el-descriptions-item>
+           <template slot="label">
+             类型
+           </template>
+           {{ tempRoom.type }}
+         </el-descriptions-item>
+       </el-descriptions>
+     </el-dialog>
+
+   </el-card>
   </div>
 </template>
 
@@ -319,8 +271,6 @@ import request from "@/utils/request.js";
 export default {
   data() {
     return {
-      isCollapse: true,
-      isCollapse2: false,
       activeName: 'RoomControl',
       floorName: 'All',
       TimeDefault: '',
@@ -336,6 +286,7 @@ export default {
       },
       tempRoom:{},
       roomdialogFormVisible: false,
+      active: 0,
     };
   },
   methods: {
@@ -394,7 +345,20 @@ export default {
     openRoomDialog(index) {
       console.log(index)
       // 打开对应索引的房间弹窗
+      request({
+        url:"/room/selectById/"+index,
+        method:"get",
+      }).then(res => {
+        if(res.code == 20011){
+          this.tempRoom = res.data;
+        }else{
+          console.log(index)
+        }
+      })
       this.roomdialogFormVisible = true;
+    },
+    next() {
+      if (this.active++ > 2) this.active = 0;
     },
   },
   mounted(){

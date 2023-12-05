@@ -71,4 +71,51 @@ body{
 .slide-left-leave-active {
   transform: translateX(-100%);
 }
+
+.slide-up-enter-active,
+.slide-up-leave-active,
+.slide-down-enter-active,
+.slide-down-leave-active {
+  will-change: transform;
+  transition: all 0.5s ease;
+}
+.slide-up-enter {
+  transform: translateY(-30%);
+  opacity: 0;
+}
+.slide-up-leave-active {
+  transform: translateY(30%);
+  opacity: 0;
+}
+.slide-down-enter {
+  transform: translateY(30%);
+  opacity: 0;
+}
+.slide-down-leave-active {
+  transform: translateY(-30%);
+  opacity: 0;
+}
+
+/* .slide-up-enter-active,
+.slide-up-leave-active,
+.slide-down-enter-active,
+.slide-down-leave-active  {
+  transition: all 0.75s ease-out;
+}
+.slide-up-enter {
+  position: absolute;
+  right: 0;
+}
+.slide-up-leave-active {
+  position: absolute;
+  right: -100%;
+}
+.slide-down-enter {
+  position: absolute;
+  left: -100%;
+}
+.slide-down-leave-active {
+  position: absolute;
+  left: 0;
+} */
 </style>
