@@ -6,6 +6,11 @@ const request = axios.create({
     timeout: 30000
 })
 
+var vm = new Vue({
+    router,
+    render: h => h(App)
+  }).$mount('#app')  
+
 // request 拦截器
 // 可以自请求发送前对请求做一些处理
 // 比如统一加token，对请求参数统一加密
@@ -25,8 +30,9 @@ request.interceptors.request.use(config => {
 request.interceptors.response.use(
     response => {
         let res = response.data;
-        if(response.code==401){
-            this.$router.push({name:'login'})
+        if(res.code){
+            vm.$router.push('/login')
+            alert('请登录！')
         }
         // 兼容服务端返回的字符串数据
         if (typeof res === 'string') {
