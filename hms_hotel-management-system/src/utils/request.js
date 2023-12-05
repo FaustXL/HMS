@@ -1,4 +1,5 @@
 import axios from 'axios'
+axios.defaults.withCredentials = true
 
 // 创建可一个新的axios对象
 const request = axios.create({
