@@ -107,28 +107,15 @@
 
 
         <el-tab-pane label="客户入住" name="Stay" >
-          <!-- <div class="block">
-            <el-date-picker
-              v-model="TimeDefault"
-              type="datetimerange"
-              :picker-options="pickerOptions"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :default-time="['14:00:00', '12:00:00']"
-              align="right">
-            </el-date-picker>
-          </div> -->
-          <!-- <el-steps :active="1" finish-status="success" simple style="margin-top: 10px;background-color: white;margin-bottom: 20px;">
-            <el-step title="步骤 1" ></el-step>
-            <el-step title="步骤 2" ></el-step>
-            <el-step title="步骤 3" ></el-step>
-          </el-steps> -->
+          <el-steps :active="active" finish-status="success" simple style="margin-top: 10px;background-color: white;margin-bottom: 20px;">
+            <el-step title="填写表单" ></el-step>
+            <el-step title="校验表单" ></el-step>
+          </el-steps>
 
-            <div style="display: flex;flex-direction:row">
-              <div style="padding: 0px 0px 20px 30px;width: 50%;display: flex;flex: 1;height: 800px;margin: 10px;">
-                <el-form ref="form" :model="Stay" label-width="100px">
-
+            <div ref="StayBox" class="StayBox">
+              <div style="padding: 20px 0px 20px 30px;width: 50%;display: flex;flex: 1;margin: 10px;">
+                <el-form ref="form" :model="Stay" label-width="100px" style="display: flex;flex-direction: column;justify-content: space-between;">
+                  
                   <el-form-item label="客户姓名">
                       <el-input v-model="Stay.customer.name" placeholder="请输入内容"></el-input>
                     </el-form-item>
@@ -137,31 +124,12 @@
                       <el-input v-model="Stay.customer.idCard" placeholder="请输入内容"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="性别">
-                      <el-radio-group v-model="Stay.customer.sex">
-                      <el-radio label="男"></el-radio>
-                      <el-radio label="女"></el-radio>
-                    </el-radio-group>
-                    </el-form-item>
-
-                    <el-form-item label="电话号码" prop="phoneNumber"
-                      :rules="[
-                          { required: true, message: '电话不能为空'},
-                          { type: 'number', message: '电话必须为数字值'}]">
+                    <el-form-item label="电话号码" prop="phoneNumber" key="phoneNumber">
                       <el-input v-model.number="Stay.customer.phoneNumber" placeholder="请输入内容" ></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="客户备注">
-                      <el-input
-                        type="textarea"
-                        :autosize="{ minRows: 2, maxRows: 4}"
-                        placeholder="请输入内容"
-                        v-model="Stay.customer.comment">
-                      </el-input>
-                    </el-form-item>
+                    </el-form-item>      
 
                     <el-form-item label="房间号">
-                      <el-select v-model="value" filterable placeholder="请选择">
+                      <el-select v-model="Stay.roomNumber" filterable placeholder="请选择">
                         <el-option
                           v-for="item in rooms"
                           :key="item.roomNumber"
@@ -169,13 +137,6 @@
                           :value="item.roomNumber">
                         </el-option>
                       </el-select>
-                    </el-form-item>
-
-                    <el-form-item label="订单类型">
-                      <el-radio-group v-model="Stay.state">
-                        <el-radio label="入住"></el-radio>
-                        <el-radio label="预订"></el-radio>
-                      </el-radio-group>
                     </el-form-item>
 
                     <el-form-item label="活动时间">
@@ -197,10 +158,56 @@
                       </el-col>
                     </el-form-item>
 
+                    <el-form-item label="支付方式">
+                      <el-radio-group v-model="Stay.paymentWay">
+                        <el-radio-button label="信用卡"></el-radio-button>
+                        <el-radio-button label="微信"></el-radio-button>
+                        <el-radio-button label="支付宝"></el-radio-button>
+                        <el-radio-button label="美团"></el-radio-button>
+                        <el-radio-button label="现金"></el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+
+                    <el-form-item label="支付结果">
+                      <el-radio-group v-model="Stay.paymentStatus">
+                        <el-radio-button label="未支付"></el-radio-button>
+                        <el-radio-button label="已支付"></el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+
+                </el-form>
+              </div>
+
+              <div style="padding: 20px 0px 20px 30px;width: 50%;display: flex;flex: 1;margin: 10px;">
+                <el-form ref="form" :model="Stay" label-width="100px" style="display: flex;flex-direction: column;justify-content: space-between;">
+                    <el-form-item label="性别">
+                      <el-radio-group v-model="Stay.customer.sex">
+                      <el-radio label="男"></el-radio>
+                      <el-radio label="女"></el-radio>
+                    </el-radio-group>
+                    </el-form-item>
+                    
+                    <el-form-item label="订单类型">
+                      <el-radio-group v-model="Stay.state">
+                        <el-radio label="入住"></el-radio>
+                        <el-radio label="预订"></el-radio>
+                      </el-radio-group>
+                    </el-form-item>
+
+                    <el-form-item label="客户备注">
+                      <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 5, maxRows: 8}"
+                        placeholder="请输入内容"
+                        v-model="Stay.customer.comment"
+                        style="width: 400px;">
+                      </el-input>
+                    </el-form-item>
+
                     <el-form-item label="房间备注">
                       <el-input
                         type="textarea"
-                        :autosize="{ minRows: 2, maxRows: 4}"
+                        :autosize="{ minRows: 5, maxRows: 8}"
                         placeholder="请输入内容"
                         v-model="Stay.comment">
                       </el-input>
@@ -214,34 +221,16 @@
                           show-stops>
                         </el-slider>
                     </el-form-item>
-
-                    <el-form-item label="房间备注">
-                      <el-input
-                        type="textarea"
-                        :autosize="{ minRows: 2, maxRows: 4}"
-                        placeholder="请输入内容"
-                        v-model="Stay.comment">
-                      </el-input>
-                    </el-form-item>
-
-                    <el-form-item label="支付方式">
-                      <el-radio-group v-model="Stay.paymentWay">
-                        <el-radio-button label="信用卡"></el-radio-button>
-                        <el-radio-button label="微信"></el-radio-button>
-                        <el-radio-button label="支付宝"></el-radio-button>
-                        <el-radio-button label="美团"></el-radio-button>
-                        <el-radio-button label="现金"></el-radio-button>
-                      </el-radio-group>
-                    </el-form-item>
+                    
                 </el-form>
               </div>
-
-              <div style="padding: 0px 0px 20px 30px;width: 50%;display: flex;flex: 1;min-height: 800px;margin: 10px;">
-                <el-descriptions direction="vertical" :column="2" border style="width: 100%;margin: 0;">
+            </div>
+            <div ref="StayFrom" class="StayFrom" style="opacity: 0;position: absolute;left: -100%;">
+              <el-descriptions direction="vertical" :column="2" border style="width: 100%;margin: 0;">
                   <el-descriptions-item label="客户名">{{ Stay.customer.name }}</el-descriptions-item>
                   <el-descriptions-item label="性别"><el-tag size="small">{{ Stay.customer.sex }}</el-tag></el-descriptions-item>
-                  <el-descriptions-item label="手机号" :span="2">{{ Stay.customer.phoneNumber }}</el-descriptions-item>
-                  <el-descriptions-item label="身份证" :span="2">{{ Stay.customer.idCard }}</el-descriptions-item>
+                  <el-descriptions-item label="手机号">{{ Stay.customer.phoneNumber }}</el-descriptions-item>
+                  <el-descriptions-item label="身份证">{{ Stay.customer.idCard }}</el-descriptions-item>
                   <el-descriptions-item label="客户备注" :span="2">{{ Stay.customer.comment }}</el-descriptions-item>
                   <el-descriptions-item label="入住房间号">{{ Stay.roomNumber }}</el-descriptions-item>
                   <el-descriptions-item label="订单类型"><el-tag size="small">{{ Stay.state }}</el-tag></el-descriptions-item>
@@ -250,12 +239,12 @@
                   <el-descriptions-item label="折扣">{{ Stay.discount }}</el-descriptions-item>
                   <el-descriptions-item label="支付方式" :span="2">{{ Stay.paymentWay }}</el-descriptions-item>
                   <el-descriptions-item label="房间备注" :span="2">{{ Stay.comment }}</el-descriptions-item>
-                </el-descriptions>
-              </div>
+              </el-descriptions>
             </div>
+
             <div style="text-align: center;">
-              <el-button type="primary" @click="onSubmit">立即创建</el-button>
-              <el-button>取消</el-button>
+              <el-button v-if="active==1" @click="previousClick">上一步</el-button>
+              <el-button type="primary" @click="nextClick">下一步</el-button>
             </div>
 
         </el-tab-pane>
@@ -372,11 +361,11 @@ export default {
         checkOutTime:'',
         discount: 1,
         paymentWay: '信用卡',
+        paymentStatus: '未支付',
         customer: {
           idCard:'',
           name:'',
           sex:'男',
-          birthday:'',
           phoneNumber:'',
           comment:'',
         },
@@ -395,6 +384,7 @@ export default {
       console.log(tab, event);
       if(this.activeName == 'RoomControl'){
         /* 点击房间管控的时候提交请求获取数据 */
+        this.selectAllAction()
         console.log(this.activeName);
       }
     },
@@ -436,6 +426,16 @@ export default {
         customClass: 'messageZ'
       });
     },
+    FalseMes(mes) {
+      //字体为红色的提示框
+      //用于警告、报错
+      const h = this.$createElement;
+      this.$notify({
+        title: "提示",
+        message: h("i", { style: "color: red" }, mes),
+        customClass: 'messageZ'
+      });
+    },
     openRoomDialog(index) {
       console.log(index)
       // 打开对应索引的房间弹窗
@@ -451,14 +451,60 @@ export default {
       })
       this.roomdialogFormVisible = true;
     },
-    next() {
-      if (this.active++ > 2) this.active = 0;
+    nextClick() {
+      
+      if(this.active==0){
+        if( this.Stay.roomNumber==''||
+            this.Stay.checkInTime==''||
+            this.Stay.checkOutTime==''||
+            this.Stay.customer.idCard==''||
+            this.Stay.customer.name==''||
+            this.Stay.customer.phoneNumber=='')
+          {
+            this.FalseMes('除备注外，不能留空！');
+        }else{
+          this.active++;
+          this.$refs.StayBox.style = 'opacity: 0;position: absolute;left: -100%;';
+          this.$refs.StayFrom.style = 'opacity: 1;';
+        }
+        
+      }else if(this.active==1){
+        console.log(this.Stay)
+        request({
+          url:'/checkInInformation',
+          method:"post",
+          data: this.Stay
+        }).then(res => {
+          if(res.code == 20031){
+            this.active++
+            this.openMes('添加成功！')
+          }else{
+            this.FalseMes(res.message)
+          }
+        })
+
+      }else{
+        if (this.active++ > 0) this.active = 0;
+        this.$refs.StayBox.style = 'opacity: 1;';
+        this.$refs.StayFrom.style = 'opacity: 0;position: absolute;left: -100%;';
+      }
+    },
+    previousClick(){
+      this.active--;
+        this.$refs.StayBox.style = 'opacity: 1;';
+        this.$refs.StayFrom.style = 'opacity: 0;position: absolute;left: -100%;';
     },
     getDate(){
       /* 将开始日期赋值给Stay */
       if(this.TimeDefault != null){
         this.Stay.checkInTime = this.TimeDefault[0]
         this.Stay.checkOutTime = this.TimeDefault[1]
+        var today = new Date();
+        if(today.getDate == this.TimeDefault[0].getDate){
+          this.Stay.state = '入住'
+        }else{
+          this.Stay.state = '预订'
+        }
       }else{
         this.Stay.checkInTime = this.Stay.checkOutTime = ''
       }
@@ -500,5 +546,17 @@ export default {
 .roombutton:hover .room-Card {
   color: #409eff;
   border: 1px solid #409eff;
+}
+.StayBox{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-height: 650px;
+  transition: all 0.3s ease;
+}
+.StayFrom{
+  min-height: 650px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
 }
 </style>

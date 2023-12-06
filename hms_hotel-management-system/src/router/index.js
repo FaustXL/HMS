@@ -34,15 +34,15 @@ const routes = [
         meta: {index: 2}
       },
       {
-        path: 'dooropen',
-        name: 'dooropen',
-        component: () => import('@/views/elementviews/DoorOpenView.vue'),
-        meta: {index: 3}
-      },
-      {
         path: '/resource',
         name: 'resource',
         component: () => import('@/views/elementviews/ResourceView.vue'),
+        meta: {index: 3}
+      },
+      {
+        path: 'dooropen',
+        name: 'dooropen',
+        component: () => import('@/views/elementviews/DoorOpenView.vue'),
         meta: {index: 4}
       },
       {

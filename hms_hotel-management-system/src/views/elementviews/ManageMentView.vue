@@ -64,15 +64,13 @@
           </router-link>
 
           <!-- 5.退出登录 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="5">
+            <el-menu-item index="5" @click="loginOut">
               <i class="icon"
                 ><font-awesome-icon
                   :icon="['fass', 'arrow-right-from-bracket']"
               /></i>
               <span slot="title">退出登录</span>
             </el-menu-item>
-          </router-link>
 
         </el-menu>
       </el-aside>
@@ -153,6 +151,7 @@
 </template>
 
 <script>
+import request from "@/utils/request.js";
 export default {
   data() {
     return {
@@ -171,6 +170,37 @@ export default {
     toggleSwitch() {
       this.isCollapse = !this.isCollapse;
       this.isCollapse2 = !this.isCollapse2;
+    },
+    openMes(message) {
+      //字体为绿色的提示框
+      //用于成功提示
+      const h = this.$createElement;
+      this.$notify({
+        title: '提示',
+        message: h('i', { style: 'color: teal'}, message),
+        customClass: 'messageZ'
+      });
+    },
+    FalseMes(mes) {
+      //字体为红色的提示框
+      //用于警告、报错
+      const h = this.$createElement;
+      this.$notify({
+        title: "提示",
+        message: h("i", { style: "color: red" }, mes),
+        customClass: 'messageZ'
+      });
+    },
+    loginOut(){
+      /* http://localhost:8080/loginOut */
+      request.get("/loginOut").then(res => {
+        if(res.code == 20041){
+          this.openMes(res.message)
+          this.$router.push({name:'login'})
+        }else{
+          this.FalseMes(res.message)
+        }
+      })
     },
     
   },

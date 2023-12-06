@@ -18,7 +18,7 @@ request.interceptors.request.use(config => {
     return config
 }, error => {
     console.error('request error: ' + error) // for debug
-    return Promise.reject(error)
+    //return Promise.reject(error)
 });
 
 // response 拦截器
