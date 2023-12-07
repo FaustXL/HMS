@@ -248,7 +248,9 @@
             </div>
 
         </el-tab-pane>
-        <el-tab-pane label="客户退房" name="Check">客户退房AAAAAAAAAAAAAAAAAAAAAAAAAA</el-tab-pane>
+        <el-tab-pane label="客户退房" name="Check">
+          
+        </el-tab-pane>
         <el-tab-pane label="条件查询" name="Inquire">条件查询</el-tab-pane>
       </el-tabs>
 
@@ -500,6 +502,7 @@ export default {
         this.Stay.checkInTime = this.TimeDefault[0]
         this.Stay.checkOutTime = this.TimeDefault[1]
         var today = new Date();
+        console.log(today.getDate)
         if(today.getDate == this.TimeDefault[0].getDate){
           this.Stay.state = '入住'
         }else{

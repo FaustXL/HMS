@@ -15,8 +15,8 @@
             <input ref="password" v-model="accountForm.password" placeholder="" class="account" type="password"  maxlength="16">
             <label ref="passwordLabel" class="accountLabel">请输入密码</label>
           </div>
-          <el-button type="text" style="height: 40px;width: 100px;position: absolute;left: 50px;bottom: 50px;" @click="enrollShow(1)">新增管理员？点击注册</el-button>
-          <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="Login()">下一步</el-button>
+          <el-button type="text" style="height: 40px;width: 100px;position: absolute;left: 50px;bottom: 50px;" @click="Switch()">新增管理员？点击注册</el-button>
+          <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="Login()" autofocus="true">下一步</el-button>
         </div>
       </div>
 
@@ -37,8 +37,8 @@
             <input ref="registerRePassword" v-model="registerForm.repassword" placeholder="" class="account" type="password"  maxlength="16">
             <label ref="registerRePasswordLabel" class="accountLabel">请再次输入密码</label>
           </div>
-          <el-button type="text" style="height: 40px;width: 100px;position: absolute;left: 50px;bottom: 50px;" @click="enrollShow(0)">已有账号？点击登录</el-button>
-          <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="register()">下一步</el-button>
+          <el-button type="text" style="height: 40px;width: 100px;position: absolute;left: 50px;bottom: 50px;" @click="Switch()">已有账号？点击登录</el-button>
+          <el-button type="primary" style="height: 40px;width: 100px;position: absolute;right: 50px;bottom: 50px;" @click="register()" autofocus="true">下一步</el-button>
         </div>
       </div>
 
@@ -64,6 +64,7 @@ export default {
       enrollShowBackground:'background: #fff;',
       loginBox: 'opacity: 1;z-index: 1;height: 450px;',
       enrollBox: 'opacity: 0;position: absolute;z-index: 0;height: 450px;',
+      boxIndex: 1,
     }
   },
   methods: {
@@ -89,10 +90,12 @@ export default {
         this.$refs.registerUserName.style = this.$refs.registerUserNameLabel.style =
         this.$refs.registerPassword.style = this.$refs.registerPasswordLabel.style = 
         this.$refs.registerRePassword.style = this.$refs.registerRePasswordLabel.style = ''
+        this.boxIndex = 0
       }else{
         this.enrollShowBackground = 'background: #fff;';
         this.loginBox = 'opacity: 1;z-index: 1;height: 450px;';
         this.enrollBox = 'opacity: 0;position: absolute;z-index: 0;height: 450px;';
+        this.boxIndex = 1
       }
     },
     openMes(message) {
@@ -184,7 +187,7 @@ export default {
           if(res.code == 20031){
             this.accountForm.username = this.registerForm.username;
             this.accountForm.password = this.registerForm.password;
-            this.enrollShow(0);
+            this.enrollShow(this.boxIndex);
             this.openMes(res.message);
           }else{
             this.openMes(res.message);
@@ -192,6 +195,33 @@ export default {
         })
       }
     },
+    Switch(){
+      if(this.boxIndex == 1){
+        this.enrollShow(this.boxIndex),
+        this.boxIndex == 0
+      }else(
+        this.enrollShow(this.boxIndex),
+        this.boxIndex ==1
+      )
+    },
+    handkeyCode(e) {
+      let key = null;
+      if (window.event === undefined) {
+        key = e.keyCode;
+      } else {
+        key = window.event.keyCode;
+      }
+      if (key === 13) {
+        if(this.boxIndex == 1){
+          this.Login()
+        }else(
+          this.register()
+        )
+      }
+    },
+  },
+  created() {
+    window.addEventListener('keydown', this.handkeyCode, true)//开启监听键盘按下事件
   },
 }
 </script>
