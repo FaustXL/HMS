@@ -452,9 +452,12 @@ export default {
 </script>
 
 <style>
-.box-card {
+.box-card{
   width: 98%;
-  min-height: 98%;
+  min-width: 1000px;
+  min-height: 95vh;
+  margin: 0;
+  padding: 0;
   position: relative;
 }
 .room-card {

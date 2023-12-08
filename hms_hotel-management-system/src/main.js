@@ -55,7 +55,6 @@ import '@/views/css/nav.css'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 
 
-
 library.add(fas, far, fab)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
@@ -67,7 +66,9 @@ Vue.component('font-awesome-layers-text', FontAwesomeLayersText)
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
-axios.defaults.baseURL="/api" //
+Vue.config.silent = true;
+
+axios.defaults.baseURL="/api" 
 
 new Vue({
   el: '#app',
