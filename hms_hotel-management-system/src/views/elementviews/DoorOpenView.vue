@@ -291,7 +291,6 @@
           
         </el-tab-pane>
 
-        <el-tab-pane label="条件查询" name="Inquire">条件查询</el-tab-pane>
       </el-tabs>
 
      <!-- 房间信息窗口 -->
@@ -332,6 +331,45 @@
             {{ tempRoom.type }}
           </el-descriptions-item>
         </el-descriptions>
+
+        <h3 style="margin-top: 40px;">历史客户</h3>
+        <el-table
+          :data="clients"
+          border
+          style="width: 100%;margin-bottom: 50px;">
+          <el-table-column
+            fixed
+            prop="idCard"
+            label="身份证"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="姓名"
+            width="150">
+          </el-table-column>
+          <el-table-column
+            prop="sex"
+            label="性别"
+            width="120">
+          </el-table-column>
+          <el-table-column
+            prop="birthday"
+            label="生日"
+            width="150">
+          </el-table-column>
+          <el-table-column
+            prop="phoneNumber"
+            label="电话"
+            width="150">
+          </el-table-column>
+          <el-table-column
+            prop="comment"
+            label="备注"
+            width="auto"
+            min-width="300">
+          </el-table-column>
+        </el-table>
       </el-dialog>
 
     </el-card>
@@ -382,6 +420,7 @@ export default {
         id: '',
         state: '退房',
       },
+      clients: [],
     };
   },
   methods: {
@@ -471,10 +510,24 @@ export default {
       }).then(res => {
         if(res.code == 20011){
           this.tempRoom = res.data;
+          console.log(JSON.stringify(this.tempRoom))
+          request({
+            url: '/room/selectroomhistory',
+            method: "post",
+            data: this.tempRoom,
+          }).then(res => {
+            if(res.code == 20011){
+              this.clients = res.data;
+            }else{
+              this.FalseMes(res.message)
+            }
+          })
         }else{
           console.log(index)
         }
-      })
+      });
+      
+      
       this.roomdialogFormVisible = true;
     },
     nextClick() {
