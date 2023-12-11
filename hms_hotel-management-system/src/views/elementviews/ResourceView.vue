@@ -1,6 +1,22 @@
 <template>
   <div>
     <el-card class="box-card">
+      <div style="margin-bottom: 20px;">
+        <el-select v-model="searchId" filterable placeholder="请选择" @change="Search()">
+          <el-option
+            key="all"
+            label="全部"
+            value="-1">
+          </el-option>
+          
+          <el-option
+            v-for="item in allResource"
+            :key="item.classify"
+            :label="item.classify"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </div>
       <div style="display: flex;flex-wrap: wrap;">
         <el-card class="resource-card" shadow="hover" v-for="(item,index) in resource" :key="index">
           <h1 style="padding: 0;margin: 0 0 10px 0;">{{ item.classify }}</h1>
@@ -10,7 +26,7 @@
               placement="top"
               width="150"
               v-model="item.deleteVisible">
-              <p>确定删除该房间吗？</p>
+              <p>确定删除该资源吗？</p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="item.deleteVisible = false">取消</el-button>
                 <el-button type="primary" size="mini" @click="deleteResource(item.id)">确定</el-button>
@@ -58,6 +74,7 @@ export default {
   data() {
     return {
       resource:[],
+      allResource:[],
       addDialogVisible:false,
       newResoure:{
         classify: '',
@@ -66,7 +83,7 @@ export default {
       isAddFirst: true,
       cardPosition1: '0%',
       cardPosition2: '110%',
-
+      SearchId:'',
     };
   },
   methods: {
@@ -97,8 +114,11 @@ export default {
       }).then(res => {
         if(res.code == 20011){
           console.log(res)
-          this.resource = res.data
+          this.resource = this.allResource = res.data
           this.resource.forEach(item => {
+            this.$set(item,'deleteVisible',false);
+          })
+          this.allResource.forEach(item => {
             this.$set(item,'deleteVisible',false);
           })
         }else{
@@ -186,7 +206,26 @@ export default {
           this.FalseMes(res.message)
         }
       })
-    }
+    },
+    Search(){
+      if(this.searchId == -1){
+        this.selectAll()
+      }else{
+        request({
+          url:'/stock/'+this.searchId,
+          method:"get",
+        }).then(res => {
+          if(res.code == 20011){
+            this.resource = []
+            this.resource[0] = res.data
+            this.resource.deleteVisible = false
+            this.openMes(res.message)
+          }else{
+            this.FalseMes(res.message)
+          }
+        })
+      }
+    },
   },
   mounted(){
     this.selectAll();
