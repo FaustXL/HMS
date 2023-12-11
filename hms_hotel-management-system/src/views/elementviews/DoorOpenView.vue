@@ -5,7 +5,7 @@
         <el-tab-pane label="房间管控" name="RoomControl">
 
           <el-tabs tab-position="left" v-model="floorName" @tab-click="floorClick" style="margin-left: -20px;">
-              <el-tab-pane label="全部房间" name="All">
+            <el-tab-pane label="全部房间" name="All">
                 <el-button
                 type="text"
                 v-for="(item, index) in rooms"
@@ -31,7 +31,7 @@
                   class="room-Card"
                   shadow="hover"
                   style="position: relative;background-color: #c6e2ff;"
-                  v-else-if="item.state == '预定中'"
+                  v-else-if="item.state == '预订中'"
                 >
                   <span>{{ item.roomNumber }}</span><br>
                   <p style="font-size: 13px;color: #409EFF;">{{ item.state }}</p>
@@ -52,8 +52,8 @@
                 </el-card>
 
                 </el-button>
-              </el-tab-pane>
-                <el-tab-pane v-for="(floor,index) in floors" :key="index" :label="`第 ${floor} 层`" :name="floor">
+            </el-tab-pane>
+            <el-tab-pane v-for="(floor,index) in floors" :key="index" :label="`第 ${floor} 层`" :name="floor">
                   <el-button
                       type="text"
                       v-for="(item, index) in rooms"
@@ -79,7 +79,7 @@
                   class="room-Card"
                   shadow="hover"
                   style="position: relative;background-color: #c6e2ff;"
-                  v-else-if="item.state == '预定中'"
+                  v-else-if="item.state == '预订中'"
                 >
                   <span>{{ item.roomNumber }}</span><br>
                   <p style="font-size: 13px;color: #409EFF;">{{ item.state }}</p>
@@ -100,9 +100,8 @@
                 </el-card>
 
                 </el-button>
-          </el-tab-pane>
-        </el-tabs>
-        
+            </el-tab-pane>
+          </el-tabs>
         </el-tab-pane>
 
 
@@ -117,64 +116,65 @@
                 <el-form ref="form" :model="Stay" label-width="100px" style="display: flex;flex-direction: column;justify-content: space-between;">
                   
                   <el-form-item label="客户姓名">
-                      <el-input v-model="Stay.customer.name" placeholder="请输入内容"></el-input>
-                    </el-form-item>
+                    <el-input v-model="Stay.customer.name" placeholder="请输入内容"></el-input>
+                  </el-form-item>
 
-                    <el-form-item label="身份证">
-                      <el-input v-model="Stay.customer.idCard" placeholder="请输入内容"></el-input>
-                    </el-form-item>
+                  <el-form-item label="身份证">
+                    <el-input v-model="Stay.customer.idCard" placeholder="请输入内容"></el-input>
+                  </el-form-item>
 
-                    <el-form-item label="电话号码" prop="phoneNumber" key="phoneNumber">
-                      <el-input v-model.number="Stay.customer.phoneNumber" placeholder="请输入内容" ></el-input>
-                    </el-form-item>      
+                  <el-form-item label="电话号码" prop="phoneNumber" key="phoneNumber">
+                    <el-input v-model.number="Stay.customer.phoneNumber" placeholder="请输入内容" ></el-input>
+                  </el-form-item>      
 
-                    <el-form-item label="房间号">
-                      <el-select v-model="Stay.roomNumber" filterable placeholder="请选择">
-                        <el-option
-                          v-for="item in rooms"
-                          :key="item.roomNumber"
-                          :label="item.roomNumber"
-                          :value="item.roomNumber">
-                        </el-option>
-                      </el-select>
-                    </el-form-item>
+                  <el-form-item label="房间号">
+                    <el-select v-model="Stay.roomNumber" filterable placeholder="请选择" @change="checkPrice()">
+                      <el-option
+                        v-for="item in rooms"
+                        :key="item.roomNumber"
+                        :label="item.roomNumber"
+                        :value="item.roomNumber">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
 
-                    <el-form-item label="活动时间">
-                      <el-col :span="11">
-                        <div class="block">
-                          <el-date-picker
-                            v-model="TimeDefault"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            type="datetimerange"
-                            :picker-options="pickerOptions"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            :default-time="['14:00:00', '12:00:00']"
-                            @change="getDate"
-                            align="right">
-                          </el-date-picker>
-                        </div>
-                      </el-col>
-                    </el-form-item>
+                  <el-form-item label="入住时间">
+                    <el-col :span="11">
+                      <div class="block">
+                        <el-date-picker
+                          v-model="TimeDefault"
+                          value-format="yyyy-MM-dd HH:mm:ss"
+                          type="datetimerange"
+                          :picker-options="pickerOptions"
+                          range-separator="至"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          :default-time="['14:00:00', '12:00:00']"
+                          @change="getDate"
+                          align="right">
+                        </el-date-picker>
+                      </div>
+                    </el-col>
+                  </el-form-item>
 
-                    <el-form-item label="支付方式">
-                      <el-radio-group v-model="Stay.paymentWay">
-                        <el-radio-button label="信用卡"></el-radio-button>
-                        <el-radio-button label="微信"></el-radio-button>
-                        <el-radio-button label="支付宝"></el-radio-button>
-                        <el-radio-button label="美团"></el-radio-button>
-                        <el-radio-button label="现金"></el-radio-button>
-                      </el-radio-group>
-                    </el-form-item>
+                  <el-form-item label="支付方式">
+                    <el-radio-group v-model="Stay.paymentWay">
+                      <el-radio-button label="信用卡"></el-radio-button>
+                      <el-radio-button label="微信"></el-radio-button>
+                      <el-radio-button label="支付宝"></el-radio-button>
+                      <el-radio-button label="美团"></el-radio-button>
+                      <el-radio-button label="现金"></el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
 
-                    <el-form-item label="支付结果">
-                      <el-radio-group v-model="Stay.paymentStatus">
-                        <el-radio-button label="未支付"></el-radio-button>
-                        <el-radio-button label="已支付"></el-radio-button>
-                      </el-radio-group>
-                    </el-form-item>
+                  <el-form-item label="支付结果">
+                    <el-radio-group v-model="Stay.paymentStatus">
+                      <el-radio-button label="未支付"></el-radio-button>
+                      <el-radio-button label="已支付"></el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
 
+                  
                 </el-form>
               </div>
 
@@ -216,29 +216,40 @@
                     <el-form-item label="折扣">
                         <el-slider
                           v-model="Stay.discount"
-                          :step="0.1"
+                          :step="0.05"
                           max="1"
-                          show-stops>
+                          show-stops
+                          @change="checkPrice()">
                         </el-slider>
                     </el-form-item>
+
+                    <el-form-item label="价格">
+                    <div v-if="price.length == 1" style="color: #409EFF;font-size: 50px;height: 55px;">{{ price[0] }}</div>
+                    <div v-else-if="price.length == 2"  style="color: #409EFF;font-size: 50px;height: 55px;">
+                      <span style="padding: 0;margin: 0;">{{ price[1] }}</span>
+                      <s style="font-size: 15px;color: #555;padding: 0;margin: 0;font-weight: bold;">{{ `原价: ${price[0]}` }}</s>
+                    </div>
+                    <div v-else style="color: #409EFF;font-size: 50px;height: 55px;">0</div>
+                  </el-form-item>
                     
                 </el-form>
               </div>
             </div>
+
             <div ref="StayFrom" class="StayFrom" style="opacity: 0;position: absolute;left: -100%;">
               <el-descriptions direction="vertical" :column="2" border style="width: 100%;margin: 0;">
-                  <el-descriptions-item label="客户名">{{ Stay.customer.name }}</el-descriptions-item>
-                  <el-descriptions-item label="性别"><el-tag size="small">{{ Stay.customer.sex }}</el-tag></el-descriptions-item>
-                  <el-descriptions-item label="手机号">{{ Stay.customer.phoneNumber }}</el-descriptions-item>
-                  <el-descriptions-item label="身份证">{{ Stay.customer.idCard }}</el-descriptions-item>
-                  <el-descriptions-item label="客户备注" :span="2">{{ Stay.customer.comment }}</el-descriptions-item>
-                  <el-descriptions-item label="入住房间号">{{ Stay.roomNumber }}</el-descriptions-item>
-                  <el-descriptions-item label="订单类型"><el-tag size="small">{{ Stay.state }}</el-tag></el-descriptions-item>
-                  <el-descriptions-item label="入住时间">{{ Stay.checkInTime }}</el-descriptions-item>
-                  <el-descriptions-item label="退房时间">{{ Stay.checkOutTime }}</el-descriptions-item>
-                  <el-descriptions-item label="折扣">{{ Stay.discount }}</el-descriptions-item>
-                  <el-descriptions-item label="支付方式" :span="2">{{ Stay.paymentWay }}</el-descriptions-item>
-                  <el-descriptions-item label="房间备注" :span="2">{{ Stay.comment }}</el-descriptions-item>
+                <el-descriptions-item label="客户名">{{ Stay.customer.name }}</el-descriptions-item>
+                <el-descriptions-item label="性别"><el-tag size="small">{{ Stay.customer.sex }}</el-tag></el-descriptions-item>
+                <el-descriptions-item label="手机号">{{ Stay.customer.phoneNumber }}</el-descriptions-item>
+                <el-descriptions-item label="身份证">{{ Stay.customer.idCard }}</el-descriptions-item>
+                <el-descriptions-item label="客户备注" :span="2">{{ Stay.customer.comment }}</el-descriptions-item>
+                <el-descriptions-item label="入住房间号">{{ Stay.roomNumber }}</el-descriptions-item>
+                <el-descriptions-item label="订单类型"><el-tag size="small">{{ Stay.state }}</el-tag></el-descriptions-item>
+                <el-descriptions-item label="入住时间">{{ Stay.checkInTime }}</el-descriptions-item>
+                <el-descriptions-item label="退房时间">{{ Stay.checkOutTime }}</el-descriptions-item>
+                <el-descriptions-item label="折扣">{{ Stay.discount }}</el-descriptions-item>
+                <el-descriptions-item label="支付方式" :span="2">{{ Stay.paymentWay }}</el-descriptions-item>
+                <el-descriptions-item label="房间备注" :span="2">{{ Stay.comment }}</el-descriptions-item>
               </el-descriptions>
             </div>
 
@@ -248,9 +259,38 @@
             </div>
 
         </el-tab-pane>
-        <el-tab-pane label="客户退房" name="Check">
+
+        <el-tab-pane label="客户退房" name="Check" style="position: relative;">
+          <el-form :model="Check" label-width="100px" style="display: flex;flex-direction: column;justify-content: space-between;padding-bottom: 50px;margin-top: 20px;">
+            <el-form-item label="房间号">
+              <el-select v-model="Check.id" filterable placeholder="请选择" @change="checkState()">
+                <el-option
+                  v-for="item in outRooms"
+                  :key="item.roomNumber"
+                  :label="item.roomNumber"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="操作类型">
+              <el-tag style="font-size: 15px;">{{ Check.state }}</el-tag>
+            </el-form-item>
+
+            <el-form-item label="客户信息">
+              <el-descriptions direction="vertical" :column="2" border style="width: 100%;margin: 0;">
+                <el-descriptions-item label="客户名">{{ customer.name }}</el-descriptions-item>
+                <el-descriptions-item label="性别"><el-tag size="small">{{ customer.sex }}</el-tag></el-descriptions-item>
+                <el-descriptions-item label="手机号">{{ customer.phoneNumber }}</el-descriptions-item>
+                <el-descriptions-item label="身份证">{{ customer.idCard }}</el-descriptions-item>
+                <el-descriptions-item label="客户备注" :span="2">{{ customer.comment }}</el-descriptions-item>
+              </el-descriptions>
+            </el-form-item>
+            <el-button type="primary" style="position: absolute;right: 20px;bottom: 0;" @click="Unsubscribe">{{ `立即${Check.state}` }}</el-button>
+          </el-form>
+
           
         </el-tab-pane>
+
         <el-tab-pane label="条件查询" name="Inquire">条件查询</el-tab-pane>
       </el-tabs>
 
@@ -260,42 +300,6 @@
         :title="tempRoom.roomNumber"
         :visible.sync="roomdialogFormVisible">
         <el-descriptions :data="tempRoom" class="margin-top" title="房间信息" :column="3" :size="size" border>
-          <!-- <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-postcard"></i>
-              身份证号
-            </template>
-            {{ customer.idCard }}
-          </el-descriptions-item>
-          
-          <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-user"></i>
-              姓名
-            </template>
-            {{ customer.name }}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-mobile-phone"></i>
-              手机号
-            </template>
-            {{ customer.phoneNumber }}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-date"></i>
-              生日
-            </template>
-            {{ customer.birthday }}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-tickets"></i>
-              备注
-            </template>
-            {{ customer.comment }}
-          </el-descriptions-item> -->
           <el-descriptions-item>
             <template slot="label">
               房间号
@@ -344,6 +348,7 @@ export default {
       TimeDefault: '',
       rooms: [],
       floors: [],
+      outRooms: [],
       customer: {
         idCard:'',
         name:'',
@@ -372,6 +377,11 @@ export default {
           comment:'',
         },
       },
+      price: [],
+      Check:{
+        id: '',
+        state: '退房',
+      },
     };
   },
   methods: {
@@ -388,6 +398,20 @@ export default {
         /* 点击房间管控的时候提交请求获取数据 */
         this.selectAllAction()
         console.log(this.activeName);
+      }else if(this.activeName == 'Stay'){
+        request({
+          url:'/room/selectForNoShowRooms',
+          method:"get",
+        }).then(res => {
+          if(res.code == 20011){
+            this.rooms = res.data
+          }else{
+            this.FalseMes(res.massage)
+          }
+        })
+
+      }else if(this.activeName == 'Check'){
+        this.getOutRooms()
       }
     },
     toggleSwitch() {
@@ -502,15 +526,109 @@ export default {
         this.Stay.checkInTime = this.TimeDefault[0]
         this.Stay.checkOutTime = this.TimeDefault[1]
         var today = new Date();
-        console.log(today.getDate)
-        if(today.getDate == this.TimeDefault[0].getDate){
+        console.log(today.getDate())
+        console.log(this.TimeDefault[0])
+        var date = new Date(this.TimeDefault[0])
+        console.log(date)
+        var day = date.getDate()
+        console.log(day)
+        if(today.getDate() == day){
           this.Stay.state = '入住'
         }else{
           this.Stay.state = '预订'
         }
+        this.checkPrice();
       }else{
         this.Stay.checkInTime = this.Stay.checkOutTime = ''
       }
+    },
+    getOutRooms(){
+      request({
+        url:'/chroom',
+        method:"get",
+      }).then(res => {
+        if(res.code == 20011){
+          this.outRooms = res.data
+          this.Check.id = this.outRooms[0].id
+          this.checkState()
+        }else{
+          this.FalseMes(res.message)
+        }
+      })
+    },
+    checkState(){
+      request({
+        url:"/room/selectById/"+this.Check.id,
+        method:"get",
+      }).then(res => {
+        if(res.code == 20011){
+          let temp = res.data;
+          if(temp.state == "已入住"){
+            this.Check.state = "退房"
+          }else{
+            this.Check.state = "取消订单"
+          }
+        }else{
+          this.FalseMes(res.message);
+        }
+      })
+      request({
+        url:'/checkInInformation/'+this.Check.id,
+        method:"get",
+      }).then(res => {
+        if(res.code == 20011){
+          this.customer = res.data;
+        }else{
+          this.FalseMes(res.message)
+        }
+      })
+    },
+    Unsubscribe(){
+      if(this.Check.state == "退房"){
+        request({
+          url:'/chroom/'+this.Check.id,
+          method:"put"
+        }).then(res => {
+          if(res.code == 20021){
+            this.openMes(res.message)
+            this.getOutRooms()
+          }else{
+            this.FalseMes(res.message)
+          }
+        })
+      }else{
+        request({
+          url:'/chroom/cancel/'+this.Check.id,
+          method:"put"
+        }).then(res => {
+          if(res.code == 20021){
+            this.openMes(res.message)
+            this.getOutRooms()
+          }else{
+            this.FalseMes(res.message)
+          }
+        })
+      }
+    },
+    checkPrice(){
+      if(this.Stay.roomNumber != ''&&
+        this.Stay.checkInTime != ''){
+          request({
+            url:'/room/discount',
+            method:"post",
+            data:this.Stay,
+          }).then(res => {
+            if(res.code == 20050){
+              this.price = [];
+              this.price[0] = res.data
+            }else if(res.code == 20051){
+              this.price = res.data
+              this.openMes(res.message)
+            }else{
+              this.FalseMes(res.message)
+            }
+          })
+        }
     },
   },
   mounted(){

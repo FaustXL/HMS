@@ -6,7 +6,17 @@
           <h1 style="padding: 0;margin: 0 0 10px 0;">{{ item.classify }}</h1>
           <el-input-number v-model="item.number" @change="handleChange" :min="0" label="数据"></el-input-number>
           <div style="margin-top: 20px;">
-            <el-button type="danger" @click="deleteResource(item.id)">删除</el-button>
+            <el-popover
+              placement="top"
+              width="150"
+              v-model="item.deleteVisible">
+              <p>确定删除该房间吗？</p>
+              <div style="text-align: right; margin: 0">
+                <el-button size="mini" type="text" @click="item.deleteVisible = false">取消</el-button>
+                <el-button type="primary" size="mini" @click="deleteResource(item.id)">确定</el-button>
+              </div>
+              <el-button slot="reference" style="margin-right: 10px;background-color: #F56C6C;color: white;" >删除</el-button>
+            </el-popover>
             <el-button type="primary" @click="updateResource(item)">提交修改</el-button>
           </div>
         </el-card>
@@ -56,6 +66,7 @@ export default {
       isAddFirst: true,
       cardPosition1: '0%',
       cardPosition2: '110%',
+
     };
   },
   methods: {
@@ -87,7 +98,9 @@ export default {
         if(res.code == 20011){
           console.log(res)
           this.resource = res.data
-          //this.openMes(res.message)
+          this.resource.forEach(item => {
+            this.$set(item,'deleteVisible',false);
+          })
         }else{
           this.FalseMes(res.message)
         }
