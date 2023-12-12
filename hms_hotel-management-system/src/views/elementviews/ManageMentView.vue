@@ -4,10 +4,6 @@
       <!-- 第一列导航 -->
       <!--
         此导航栏为系统总导航栏，负责用户的账户管理
-        1.用户中心入口
-        2.员工管理入口
-        3.财务管理入口
-        4.报表统计入口
         5.退出登录
         -->
         <el-aside width="auto">
@@ -26,42 +22,6 @@
           >
             <i><font-awesome-icon :icon="['fas', 'expand']"/></i>
           </div>
-
-          <!-- 1.用户中心入口 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="1">
-              <i class="icon"><font-awesome-icon :icon="['fas', 'user']" /></i>
-              <span slot="title">用户中心</span>
-            </el-menu-item>
-          </router-link>
-
-          <!-- 2.员工管理入口 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="2">
-              <i class="icon"
-                ><font-awesome-icon :icon="['fas', 'people-group']"
-              /></i>
-              <span slot="title">员工管理</span>
-            </el-menu-item>
-          </router-link>
-
-          <!-- 3.财务管理入口 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="3">
-              <i class="icon"><font-awesome-icon :icon="['fas', 'coins']" /></i>
-              <span slot="title">财务管理</span>
-            </el-menu-item>
-          </router-link>
-
-          <!-- 4.报表统计入口 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="4">
-              <i class="icon"
-                ><font-awesome-icon :icon="['fas', 'arrow-trend-up']"
-              /></i>
-              <span slot="title">报表统计</span>
-            </el-menu-item>
-          </router-link>
 
           <!-- 5.退出登录 -->
             <el-menu-item index="5" @click="loginOut">
