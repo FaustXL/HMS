@@ -413,7 +413,9 @@ export default {
       this.$notify({
         title: '提示',
         message: h('i', { style: 'color: teal'}, message),
-        customClass: 'messageZ'
+        customClass: 'messageZ',
+        offset: 100,
+        duration: 2000
       });
     },
     deleteRoom(){

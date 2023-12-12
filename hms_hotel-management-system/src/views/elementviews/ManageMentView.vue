@@ -53,13 +53,6 @@
           @close="handleClose"
           :collapse="isCollapse2"
         >
-          <!-- 系统的首页 -->
-          <router-link to="/home" class="link">
-            <el-menu-item index="/home">
-              <i class="icon"><font-awesome-icon :icon="['fas', 'house']" /></i>
-              <span slot="title">首页</span>
-            </el-menu-item>
-          </router-link>
 
           <!-- 房间管理页面 -->
           <router-link to="/room" class="link">

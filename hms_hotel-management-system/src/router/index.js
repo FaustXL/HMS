@@ -22,12 +22,6 @@ const routes = [
     component: () => import('@/views/elementviews/ManageMentView.vue'),
     children:[
       {
-        path: '/home',
-        name: 'home',
-        component: () => import('../views/elementviews/HomeView.vue'),
-        meta: {index: 1}
-      },
-      {
         path: 'room',
         name: 'Room',
         component: () => import('@/views/elementviews/RoomView.vue'),
