@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <div style="margin-bottom: 20px;">
-        <el-select v-model="searchId" filterable placeholder="请选择" @change="Search()">
+        <el-select v-model="searchId" filterable placeholder="查询" @change="Search()">
           <el-option
             key="all"
             label="全部"
@@ -39,10 +39,13 @@
 
         <el-card shadow="hover" class="resource-card" style="position: relative;">
 
-          <el-card ref="resourceCard1" class="resourceCard" :style="{ left: cardPosition1 }">
-            <h1 style="padding: 0;margin: 0 0 0px 0;line-height: 90px;">点击添加</h1>
-            <el-button @click="addVisible(isAddFirst)" style="background:transparent;border-width:0px;outline:none;font-size: 40px;"><font-awesome-icon :icon="['far', 'square-plus']" /></el-button>
-          </el-card>
+          <el-button  @click="addVisible(isAddFirst)">
+            <el-card ref="resourceCard1" class="resourceCard" :style="{ left: cardPosition1 }">
+              <h1 style="padding: 0;margin: 0 0 0px 0;line-height: 90px;">点击添加</h1>
+              <!-- <el-button @click="addVisible(isAddFirst)" style="background:transparent;border-width:0px;outline:none;font-size: 40px;"><font-awesome-icon :icon="['far', 'square-plus']" /></el-button> -->
+              <span style="font-size: 40px;"><font-awesome-icon :icon="['far', 'square-plus']" /></span>
+            </el-card>
+          </el-button>
 
           <el-card ref="resourceCard2" class="resourceCard" :style="{ left: cardPosition2 }">
             <el-button @click="addVisible(isAddFirst)" style="background:transparent;border-width:0px;outline:none;position: absolute;top: 40%;left: -5%;font-size: 20px;"><font-awesome-icon :icon="['fas', 'angle-left']" /></el-button>
