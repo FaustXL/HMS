@@ -99,17 +99,30 @@ export default {
       }
     },
     openMes(message) {
+      //字体为绿色的提示框
+      //用于成功提示
       const h = this.$createElement;
       this.$notify({
         title: '提示',
-        message: h('i', { style: 'color: teal'}, message)
+        message: h('i', { style: 'color: teal'}, message),
+        customClass: 'messageZ'
+      });
+    },
+    FalseMes(mes) {
+      //字体为红色的提示框
+      //用于警告、报错
+      const h = this.$createElement;
+      this.$notify({
+        title: "提示",
+        message: h("i", { style: "color: red" }, mes),
+        customClass: 'messageZ'
       });
     },
     Login() {
       /* 登录 */
       if(this.accountForm.username == ''||this.accountForm.password == ''){
         /* 为空，弹出提示框 */
-        this.openMes('不能为空！')
+        this.FalseMes('不能为空！')
         if(this.accountForm.username == ''){
           /* 账号为空，设置动画样式 */
           this.$refs.userName.style = 
@@ -138,7 +151,7 @@ export default {
           if(res.code == 20011){
             this.$router.push({name:'Room'})
           }else{
-            this.openMes(res.message);
+            this.FalseMes(res.message);
           }
         })
       }
@@ -148,7 +161,7 @@ export default {
       /* 注册 */
       if(this.registerForm.username == ''||this.registerForm.password == ''||this.registerForm.repassword == ''){
         /* 为空，弹出提示框 */
-        this.openMes('不能为空！')
+        this.FalseMes('不能为空！')
         if(this.registerForm.username == ''){
           /* 账号为空，设置动画样式 */
           this.$refs.registerUserName.style = 
@@ -190,7 +203,7 @@ export default {
             this.enrollShow(this.boxIndex);
             this.openMes(res.message);
           }else{
-            this.openMes(res.message);
+            this.FalseMes(res.message);
           }
         })
       }

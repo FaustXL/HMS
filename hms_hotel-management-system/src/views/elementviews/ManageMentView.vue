@@ -81,7 +81,7 @@
               <span slot="title">入退房管理</span>
             </el-menu-item>
           </router-link>
-
+          
           <!-- 客户管理 -->
           <router-link to="/client" class="link">
             <el-menu-item index="/client">
@@ -89,6 +89,14 @@
                 ><font-awesome-icon :icon="['fas', 'users-viewfinder']"
               /></i>
               <span slot="title">客户管理</span>
+            </el-menu-item>
+          </router-link>
+
+          <!-- 订单管理 -->
+          <router-link to="/order" class="link">
+            <el-menu-item index="/order">
+              <i class="icon"><font-awesome-icon :icon="['fas', 'file-lines']" /></i>
+              <span slot="title">订单管理</span>
             </el-menu-item>
           </router-link>
         </el-menu>

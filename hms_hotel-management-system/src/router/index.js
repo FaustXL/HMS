@@ -46,9 +46,9 @@ const routes = [
         meta: {index: 5}
       },
       {
-        path: '/resource',
-        name: 'resource',
-        component: () => import('@/views/elementviews/ResourceView.vue'),
+        path: '/order',
+        name: 'order',
+        component: () => import('@/views/elementviews/OrderView.vue'),
         meta: {index: 6}
       },
     ]

@@ -555,7 +555,24 @@ export default {
           data: this.Stay
         }).then(res => {
           if(res.code == 20031){
-            this.active++
+            this.active++;
+            this.Stay={
+              roomNumber: '',
+              state: '入住',
+              comment: '',
+              checkInTime:'',
+              checkOutTime:'',
+              discount: 1,
+              paymentWay: '信用卡',
+              paymentStatus: '未支付',
+              customer: {
+                idCard:'',
+                name:'',
+                sex:'男',
+                phoneNumber:'',
+                comment:'',
+              },
+            },
             this.openMes('添加成功！')
           }else{
             this.FalseMes(res.message)
