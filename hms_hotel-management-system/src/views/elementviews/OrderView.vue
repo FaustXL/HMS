@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-card class="box-card">
+      <!-- 营业额展示 -->
       <el-card shadow="never" style="margin-bottom: 30px;">
         <div style="display: flex;width: 100%;justify-content: space-between;text-align: center;">
           <div class="moneyCard">
@@ -24,6 +25,8 @@
           </div>
         </div>
       </el-card>
+
+      <!-- 账单表单 -->
       <el-table :data="order" border style="width: 100%;margin-bottom: 50px;">
         <el-table-column fixed prop="orderId" label="订单号" width="200">
         </el-table-column>
@@ -39,13 +42,12 @@
         </el-table-column>
         <el-table-column prop="creationTime" label="创建时间" width="200">
         </el-table-column>
-        <el-table-column prop="cancellationTime" label="取消时间" width="auto">
+        <el-table-column prop="cancellationTime" label="取消时间" width="auto" min-width="185">
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="100">
+        <el-table-column fixed="right" label="操作" width="90">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small"
-              >查看</el-button
-            >
+            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+            <el-button @click="refund(scope.row)" type="text" size="small" v-if="scope.row.paymentStatus == '已支付'">退款</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -53,6 +55,10 @@
       <!-- 查找 -->
       <el-button type="primary" style="position: absolute; left: 20px;bottom: 20px;" @click="openDialogFilter()">
         <font-awesome-icon :icon="['fas', 'filter']" style="margin-right: 10px;"/>条件查询
+      </el-button>
+
+      <el-button type="primary" style="position: absolute; left: 140px;bottom: 20px;" @click="selectionToday()">
+        <font-awesome-icon :icon="['fas', 'filter']" style="margin-right: 10px;"/>查询今日订单
       </el-button>
 
       <!-- 分页条 -->
@@ -104,10 +110,11 @@
         </div>
       </el-dialog>
 
+      <!-- 条件查询结果窗口 -->
       <el-dialog
         title="查询结果"
         :visible.sync="dialogFilterOutcomeVisible"
-        width="80%"
+        width="85%"
         style="margin-top: -8%;">
         <el-table :data="searchResults.ordersList" border style="width: 100%;margin-bottom: 50px;">
           <el-table-column fixed prop="orderId" label="订单号" width="200">
@@ -124,14 +131,12 @@
           </el-table-column>
           <el-table-column prop="creationTime" label="创建时间" width="200">
           </el-table-column>
-          <el-table-column prop="cancellationTime" label="取消时间" width="auto">
+          <el-table-column prop="cancellationTime" label="取消时间" width="auto" min-width="185">
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="100">
+          <el-table-column fixed="right" label="操作" width="90">
             <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small"
-                >查看</el-button
-              >
-              <el-button type="text" size="small">编辑</el-button>
+              <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+              <el-button @click="refund(scope.row)" type="text" size="small" v-if="scope.row.paymentStatus == '已支付'">退款</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -141,31 +146,14 @@
         </div>
 
       </el-dialog>
-<template v-if="orderView">
+
+      <!-- 列表查询窗口 -->
       <el-dialog
         title="查询结果"
         :visible.sync="dialogOrderViewVisible"
         width="80%"
         style="margin-top: -8%;">
         
-        <!-- <el-descriptions direction="vertical" :column="2" border style="width: 100%;margin: 0;">
-          <el-descriptions-item label="客户名">{{ orderView.client.name }}</el-descriptions-item>
-          <el-descriptions-item label="性别"><el-tag size="small">{{ orderView.client.sex }}</el-tag></el-descriptions-item>
-          <el-descriptions-item label="手机号">{{ orderView.client.phoneNumber }}</el-descriptions-item>
-          <el-descriptions-item label="身份证">{{ orderView.client.idCard }}</el-descriptions-item>
-          <el-descriptions-item label="客户备注" :span="2">{{ orderView.client.comment }}</el-descriptions-item>
-          <el-descriptions-item label="订单号">{{ orderView.orderId }}</el-descriptions-item>
-          <el-descriptions-item label="房间价格">{{ orderView.roomPrice }}</el-descriptions-item>
-          <el-descriptions-item label="创建时间"><el-tag size="small">{{ orderView.creationTime }}</el-tag></el-descriptions-item>
-          <el-descriptions-item label="取消时间"><el-tag size="small">{{ orderView.cancellationTime }}</el-tag></el-descriptions-item>
-          <el-descriptions-item label="支付状态"><el-tag size="small">{{ orderView.paymentStatus }}</el-tag></el-descriptions-item>
-          <el-descriptions-item label="支付方式"><el-tag size="small">{{ orderView.paymentWay }}</el-tag></el-descriptions-item>
-          <el-descriptions-item label="实际支付">{{ orderView.totalAmount }}</el-descriptions-item>
-          <el-descriptions-item label="入住房间号">{{ orderView.room.roomNumber }}</el-descriptions-item>
-          <el-descriptions-item label="房间楼层">{{ orderView.room.floor }}</el-descriptions-item>
-          <el-descriptions-item label="房间类型">{{ orderView.room.type }}</el-descriptions-item>
-          <el-descriptions-item label="房间可入住最大人数">{{ orderView.room.maxNumber }}</el-descriptions-item>
-        </el-descriptions> -->
         <el-descriptions direction="vertical" :column="2" border style="width: 100%;margin: 0;">
           <el-descriptions-item label="客户名">{{ client.name }}</el-descriptions-item>
           <el-descriptions-item label="性别"><el-tag size="small">{{ client.sex }}</el-tag></el-descriptions-item>
@@ -184,7 +172,7 @@
           <el-descriptions-item label="房间类型">{{ room.type }}</el-descriptions-item>
           <el-descriptions-item label="房间可入住最大人数">{{ room.maxNumber }}</el-descriptions-item>
         </el-descriptions>
-      </el-dialog></template>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -404,10 +392,17 @@ export default {
         data:this.selection
       }).then(res => {
         if(res.code == 20011){
-          console.log(JSON.stringify(res.data))
           this.searchResults = res.data
-          this.searchResults = res.data
-          console.log(JSON.stringify(this.searchResults))
+          if(this.searchResults.ordersList!=[]){
+            this.searchResults.ordersList.forEach(item => {
+              if(item.creationTime != null){
+                item.creationTime = item.creationTime.replace("T", " ");
+              }
+              if(item.cancellationTime != null){
+                item.cancellationTime = item.cancellationTime.replace("T", " ");
+              }
+            })
+          }
           this.dialogFilterVisible = false
           this.dialogFilterOutcomeVisible=true
         }else{
@@ -441,6 +436,32 @@ export default {
         }
       });
       
+    },
+    selectionToday(){
+      request({
+        url:'/order/getThatDayMoney',
+        method:"get"
+      }).then(res => {
+        if(res.code == 20011){
+          this.searchResults = res.data
+          this.dialogFilterOutcomeVisible=true
+        }else{
+          this.FalseMes(res.message)
+        }
+      })
+    },
+    refund(row){
+      request({
+        url:'order/cancelOrder/'+row.orderId,
+        method:"get"
+      }).then(res => {
+        if(res.code == 20061){
+          this.openMes(res.message)
+          this.Page()
+        }else{
+          this.FalseMes(res.message)
+        }
+      })
     }
   },
   mounted(){

@@ -439,13 +439,13 @@ export default {
         console.log(this.activeName);
       }else if(this.activeName == 'Stay'){
         request({
-          url:'/room/selectForNoShowRooms',
+          url:'/room/selectExcNoShowRoom',
           method:"get",
         }).then(res => {
           if(res.code == 20011){
             this.rooms = res.data
           }else{
-            this.FalseMes(res.massage)
+            this.FalseMes(res.message)
           }
         })
 
@@ -539,8 +539,10 @@ export default {
             this.Stay.customer.idCard==''||
             this.Stay.customer.name==''||
             this.Stay.customer.phoneNumber=='')
-          {
-            this.FalseMes('除备注外，不能留空！');
+        {
+          this.FalseMes('除备注外，不能留空！');
+        }else if(this.Stay.paymentStatus == '未支付'&& this.Stay.state == "入住"){
+          this.FalseMes("未支付！")
         }else{
           this.active++;
           this.$refs.StayBox.style = 'opacity: 0;position: absolute;left: -100%;';
@@ -556,24 +558,7 @@ export default {
         }).then(res => {
           if(res.code == 20031){
             this.active++;
-            this.Stay={
-              roomNumber: '',
-              state: '入住',
-              comment: '',
-              checkInTime:'',
-              checkOutTime:'',
-              discount: 1,
-              paymentWay: '信用卡',
-              paymentStatus: '未支付',
-              customer: {
-                idCard:'',
-                name:'',
-                sex:'男',
-                phoneNumber:'',
-                comment:'',
-              },
-            },
-            this.openMes('添加成功！')
+            this.openMes(res.message)
           }else{
             this.FalseMes(res.message)
           }
@@ -583,6 +568,23 @@ export default {
         if (this.active++ > 0) this.active = 0;
         this.$refs.StayBox.style = 'opacity: 1;';
         this.$refs.StayFrom.style = 'opacity: 0;position: absolute;left: -100%;';
+        this.Stay={
+          roomNumber: '',
+          state: '入住',
+          comment: '',
+          checkInTime:'',
+          checkOutTime:'',
+          discount: 1,
+          paymentWay: '信用卡',
+          paymentStatus: '未支付',
+          customer: {
+            idCard:'',
+            name:'',
+            sex:'男',
+            phoneNumber:'',
+            comment:'',
+          },
+        }
       }
     },
     previousClick(){
