@@ -6,7 +6,7 @@
     在修改完安装位置后可以一直点下一步（里面会默认自动配置环境变量）
 
     官网：https://nodejs.org/en
-    ![Alt text](image.png)
+    ![Alt text](readmeImage/image.png)
 
 2. 打开命令窗口（win + R）
 
@@ -26,7 +26,7 @@
 
 4. 在VScode中打开项目
 
-    ![Alt text](image-2.png)
+    ![Alt text](readmeImage/image-2.png)
     
     右键文件，选择 ' 在集成终端中打开 '
     
@@ -41,10 +41,10 @@
 5. 运行
 
     在项目中找到 package.json 
-    ![Alt text](image-1.png)
+    ![Alt text](readmeImage/image-1.png)
     
     该命令即为启动命令，在终端中输入即可
-    ![Alt text](image-3.png)
+    ![Alt text](readmeImage/image-3.png)
     
     按住 Ctrl 点击链接即可快捷打开
     

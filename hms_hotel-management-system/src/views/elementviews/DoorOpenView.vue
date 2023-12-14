@@ -263,6 +263,7 @@
         <el-tab-pane label="客户退房" name="Check" style="position: relative;">
           <el-form :model="Check" label-width="100px" style="display: flex;flex-direction: column;justify-content: space-between;padding-bottom: 50px;margin-top: 20px;">
             <el-form-item label="房间号">
+            <template v-if="outRooms!=[]">
               <el-select v-model="Check.id" filterable placeholder="请选择" @change="checkState()">
                 <el-option
                   v-for="item in outRooms"
@@ -271,6 +272,7 @@
                   :value="item.id">
                 </el-option>
               </el-select>
+            </template>
             </el-form-item>
             <el-form-item label="操作类型">
               <el-tag style="font-size: 15px;">{{ Check.state }}</el-tag>

@@ -384,8 +384,14 @@ export default {
     selectAllAction(){
       /* 查找出所有的房间 */
       request.get("/room").then((res) => {
-        this.rooms = res.data;
-      });
+        if(res.code == 20011){
+          this.rooms = res.data;
+        }else{
+          this.FalseMes(res.message)
+        }
+      }).catch(error => {
+      console.log(error);
+    });
     },
     selectfloorAction(index){
       /* 查询所有的楼层号 */
@@ -437,17 +443,16 @@ export default {
     }
   },
   created() {
-    window.addEventListener("resize", this.getHeight);
-    this.getHeight();
-  },
-  destroyed() {
-    window.removeEventListener("resize", this.getHeight);
-  },
-  mounted() {
     this.selectAllAction();
     request.get("/room/returnFloor").then((res) => {
-      this.floors = res.data;
-      console.log(this.floors);
+      if(res.code == 20011){
+        this.floors = res.data;
+        console.log(this.floors);
+      }else{
+        this.FalseMes(res.message)
+      }
+    }).catch(error => {
+      console.log(error)
     });
   },
 };

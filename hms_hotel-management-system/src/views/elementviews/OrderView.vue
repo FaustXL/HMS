@@ -30,8 +30,6 @@
       <el-table :data="order" border style="width: 100%;margin-bottom: 50px;">
         <el-table-column fixed prop="orderId" label="订单号" width="200">
         </el-table-column>
-        <el-table-column prop="checkInId" label="姓名" width="120">
-        </el-table-column>
         <el-table-column prop="roomPrice" label="房间价格" width="120">
         </el-table-column>
         <el-table-column prop="totalAmount" label="总计金额" width="120">
