@@ -23,6 +23,12 @@ export default{
       //设置动画名称
       //如果index==7，则为登录界面，使用平移动画
         this.transitionName = "slide-right";
+        const h = this.$createElement;
+        this.$notify({
+            title: "提示",
+            message: h("i", { style: "color: red" }, "请登录"),
+            customClass: 'messageZ'
+        });
       } else if(from.meta.index == 7) {
         this.transitionName = "slide-right";
       } else{

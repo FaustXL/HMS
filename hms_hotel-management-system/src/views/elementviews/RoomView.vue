@@ -250,7 +250,6 @@ export default {
       roomdialogFormVisible: false,
       innerVisible: false,
       deleteVisible: false,
-
       floors: [],
       rooms: [],
       temroom:{},

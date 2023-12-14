@@ -506,6 +506,7 @@ export default {
     openRoomDialog(index) {
       console.log(index)
       // 打开对应索引的房间弹窗
+      this.clients= []
       request({
         url:"/room/selectById/"+index,
         method:"get",
@@ -520,8 +521,6 @@ export default {
           }).then(res => {
             if(res.code == 20011){
               this.clients = res.data;
-            }else{
-              this.FalseMes(res.message)
             }
           })
         }else{

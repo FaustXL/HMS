@@ -36,6 +36,7 @@ request.interceptors.response.use(
     error => {
         if(error.response.status == 401){
             window.location.href = "/login"
+            
         }
         console.error('response error: ' + error) // for debug
         //return Promise.reject(error)

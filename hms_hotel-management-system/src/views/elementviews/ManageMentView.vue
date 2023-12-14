@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="isshow">
     <el-container style="border: 1px solid #eee; min-height: 100vh">
       <!-- 第一列导航 -->
       <!--
@@ -119,6 +119,7 @@ export default {
       isCollapse: true,
       isCollapse2: false,
       transitionName: '',
+      isshow: false,
     };
   },
   methods: {
@@ -156,7 +157,7 @@ export default {
       /* http://localhost:8080/loginOut */
       request.get("/loginOut").then(res => {
         if(res.code == 20041){
-          this.openMes(res.message)
+          //this.openMes(res.message)
           this.$router.push({name:'login'})
         }else{
           this.FalseMes(res.message)
@@ -172,6 +173,16 @@ export default {
       console.log(from, "from");
       this.transitionName = to.meta.index>from.meta.index ? "slide-down":"slide-up"
    },
+  },
+  created() {
+    request.get("/room/returnFloor").then((res) => {
+      if(res.code == 20011){
+        console.log("OK~");
+        this.isshow = true
+      }
+    }).catch(error => {
+      console.log(error)
+    });
   }
 };
 </script>

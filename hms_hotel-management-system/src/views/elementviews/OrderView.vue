@@ -442,6 +442,16 @@ export default {
       }).then(res => {
         if(res.code == 20011){
           this.searchResults = res.data
+          if(this.searchResults.ordersList!=[]){
+            this.searchResults.ordersList.forEach(item => {
+              if(item.creationTime != null){
+                item.creationTime = item.creationTime.replace("T", " ");
+              }
+              if(item.cancellationTime != null){
+                item.cancellationTime = item.cancellationTime.replace("T", " ");
+              }
+            })
+          }
           this.dialogFilterOutcomeVisible=true
         }else{
           this.FalseMes(res.message)
