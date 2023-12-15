@@ -149,7 +149,9 @@ export default {
           data:this.accountForm
         }).then( res =>{
           if(res.code == 20011){
-            this.$router.push({name:'Room'})
+            if (this.$route.path !== '/room') {
+              this.$router.push({name:'Room'})
+            }
           }else{
             this.FalseMes(res.message);
           }
