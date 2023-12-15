@@ -128,14 +128,17 @@
                   </el-form-item>      
 
                   <el-form-item label="房间号">
-                    <el-select v-model="Stay.roomNumber" filterable placeholder="请选择" @change="checkPrice()">
-                      <el-option
-                        v-for="item in rooms"
-                        :key="item.roomNumber"
-                        :label="item.roomNumber"
-                        :value="item.roomNumber">
-                      </el-option>
-                    </el-select>
+                    <template v-if="rooms!=[]">
+                      <el-select v-model="Stay.roomNumber" filterable placeholder="请选择" @change="checkPrice()">
+                        <el-option
+                          v-for="(item,index) in rooms"
+                          :key="index"
+                          :label="item.roomNumber"
+                          :value="item.roomNumber">
+                        </el-option>
+                      </el-select>
+                    </template>
+                    <template v-else><span>无房间可入住或预订</span></template>
                   </el-form-item>
 
                   <el-form-item label="入住时间">
@@ -189,8 +192,8 @@
                     
                     <el-form-item label="订单类型">
                       <el-radio-group v-model="Stay.state">
-                        <el-radio label="入住"></el-radio>
-                        <el-radio label="预订"></el-radio>
+                        <el-radio :disabled="stateDisabled" label="入住"></el-radio>
+                        <el-radio :disabled="stateDisabled" label="预订"></el-radio>
                       </el-radio-group>
                     </el-form-item>
 
@@ -386,6 +389,7 @@ export default {
       activeName: 'RoomControl',
       floorName: 'All',
       TimeDefault: '',
+      stateDisabled: false,
       rooms: [],
       floors: [],
       outRooms: [],
@@ -559,6 +563,7 @@ export default {
         }).then(res => {
           if(res.code == 20031){
             this.active++;
+            this.price=[]
             this.openMes(res.message)
           }else{
             this.FalseMes(res.message)
@@ -701,6 +706,24 @@ export default {
               this.FalseMes(res.message)
             }
           })
+        }else{
+          this.price= []
+        }
+        const targetRoom = this.rooms.find(room => room.roomNumber === this.Stay.roomNumber);
+        if(targetRoom.state == "预订中"){
+          request({
+            url:'/checkInInformation/selectCustomerByRoomNumber/'+this.Stay.roomNumber,
+            method:"get",
+          }).then(res => {
+            if(res.code == 20011){
+              this.Stay.customer = res.data
+              this.Stay.state = '入住'
+              this.stateDisabled = true
+              console.log(JSON.stringify(this.Stay.customer))
+            }
+          })
+        }else{
+          console.log(targetRoom.state)
         }
     },
   },

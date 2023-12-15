@@ -117,8 +117,6 @@
         <el-table :data="searchResults.ordersList" border style="width: 100%;margin-bottom: 50px;">
           <el-table-column fixed prop="orderId" label="订单号" width="200">
           </el-table-column>
-          <el-table-column prop="checkInId" label="姓名" width="120">
-          </el-table-column>
           <el-table-column prop="roomPrice" label="房间价格" width="120">
           </el-table-column>
           <el-table-column prop="totalAmount" label="总计金额" width="120">
@@ -459,7 +457,7 @@ export default {
       })
     },
     refund(row){
-      request({
+      /* request({
         url:'order/cancelOrder/'+row.orderId,
         method:"get"
       }).then(res => {
@@ -469,7 +467,27 @@ export default {
         }else{
           this.FalseMes(res.message)
         }
-      })
+      }) */
+
+      this.$confirm('此操作将退款, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url:'order/cancelOrder/'+row.orderId,
+          method:"get"
+        }).then(res => {
+          if(res.code == 20061){
+            this.openMes(res.message)
+            this.Page()
+          }else{
+            this.FalseMes(res.message)
+          }
+        })
+      }).catch(() => {
+        console.log("已取消删除")
+      });
     }
   },
   mounted(){
